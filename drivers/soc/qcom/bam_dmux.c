@@ -301,7 +301,9 @@ static int in_global_reset;
 static int bam_dmux_uplink_vote;
 static int bam_dmux_power_state;
 
+#ifdef CONFIG_IPC_LOGGING
 static void *bam_ipc_log_txt;
+#endif
 
 #define BAM_IPC_LOG_PAGES 5
 
@@ -2833,10 +2835,12 @@ static int __init bam_dmux_init(void)
 	}
 #endif
 
+#ifdef CONFIG_IPC_LOGGING
 	bam_ipc_log_txt = ipc_log_context_create(BAM_IPC_LOG_PAGES, "bam_dmux",
 			0);
 	if (!bam_ipc_log_txt)
 		pr_err("%s : unable to create IPC Logging Context", __func__);
+#endif
 
 	rx_timer_interval = DEFAULT_POLLING_MIN_SLEEP;
 

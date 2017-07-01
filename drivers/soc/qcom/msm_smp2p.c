@@ -71,7 +71,9 @@ struct smp2p_out_list_item {
 };
 static struct smp2p_out_list_item out_list[SMP2P_NUM_PROCS];
 
+#ifdef CONFIG_IPC_LOGGING
 static void *log_ctx;
+#endif
 static int smp2p_debug_mask;
 module_param_named(debug_mask, smp2p_debug_mask,
 		   int, 0664);
@@ -224,10 +226,12 @@ static struct smp2p_interrupt_config smp2p_int_cfgs[SMP2P_NUM_PROCS] = {
  *
  * @returns: Log context or NULL if none.
  */
+#ifdef CONFIG_IPC_LOGGING
 void *smp2p_get_log_ctx(void)
 {
 	return log_ctx;
 }
+#endif
 
 /**
  * smp2p_get_debug_mask - Return debug mask.
@@ -1949,9 +1953,11 @@ static int __init msm_smp2p_init(void)
 		in_list[i].smem_edge_in = NULL;
 	}
 
+#ifdef CONFIG_IPC_LOGGING
 	log_ctx = ipc_log_context_create(NUM_LOG_PAGES, "smp2p", 0);
 	if (!log_ctx)
 		SMP2P_ERR("%s: unable to create log context\n", __func__);
+#endif
 
 	rc = platform_driver_register(&msm_smp2p_driver);
 	if (rc) {

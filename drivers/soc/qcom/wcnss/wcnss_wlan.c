@@ -453,7 +453,9 @@ static struct {
 	struct cdev ctrl_dev, node_dev;
 } *penv = NULL;
 
+#ifdef CONFIG_IPC_LOGGING
 static void *wcnss_ipc_log;
+#endif
 
 #define IPC_NUM_LOG_PAGES	12
 #define wcnss_ipc_log_string(_x...) ((void)0)
@@ -3660,9 +3662,11 @@ static struct platform_driver wcnss_wlan_driver = {
 static int __init wcnss_wlan_init(void)
 {
 
+#ifdef CONFIG_IPC_LOGGING
 	wcnss_ipc_log = ipc_log_context_create(IPC_NUM_LOG_PAGES, "wcnss", 0);
 	if (!wcnss_ipc_log)
 		wcnss_log(ERR, "Unable to create log context\n");
+#endif
 
 	platform_driver_register(&wcnss_wlan_driver);
 	platform_driver_register(&wcnss_wlan_ctrl_driver);
@@ -3684,8 +3688,10 @@ static void __exit wcnss_wlan_exit(void)
 	platform_driver_unregister(&wcnss_ctrl_driver);
 	platform_driver_unregister(&wcnss_wlan_ctrl_driver);
 	platform_driver_unregister(&wcnss_wlan_driver);
+#ifdef CONFIG_IPC_LOGGING
 	ipc_log_context_destroy(wcnss_ipc_log);
 	wcnss_ipc_log = NULL;
+#endif
 }
 
 module_init(wcnss_wlan_init);
