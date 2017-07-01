@@ -4049,7 +4049,7 @@ static void diag_debug_init(void)
 {
 	diag_ipc_log = ipc_log_context_create(DIAG_IPC_LOG_PAGES, "diag", 0);
 	if (!diag_ipc_log)
-		pr_err("diag: Failed to create IPC logging context\n");
+		pr_debug("diag: Failed to create IPC logging context\n");
 	/*
 	 * Set the bit mask here as per diag_ipc_logging.h to enable debug logs
 	 * to be logged to IPC
