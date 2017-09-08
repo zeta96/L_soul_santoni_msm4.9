@@ -503,7 +503,7 @@ asmlinkage __visible void __init start_kernel(void)
 	pr_notice("%s", linux_banner);
 	setup_arch(&command_line);
 	/*
-	 * Set up the the initial canary ASAP:
+	 * Set up the the initial canary and entropy after arch
 	 */
 	add_latent_entropy();
 	boot_init_stack_canary();
