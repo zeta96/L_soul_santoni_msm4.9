@@ -86,6 +86,9 @@ static int msm8952_mclk_event(struct snd_soc_dapm_widget *w,
 static int msm8952_wsa_switch_event(struct snd_soc_dapm_widget *w,
 			      struct snd_kcontrol *kcontrol, int event);
 
+extern unsigned char AW87319_Audio_Speaker(void);
+extern unsigned char AW87319_Audio_OFF(void);
+
 /*
  * Android L spec
  * Need to report LINEIN
@@ -346,6 +349,7 @@ int is_ext_spk_gpio_support(struct platform_device *pdev,
 
 static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 {
+#ifndef CONFIG_SND_SOC_AW87319
 	struct snd_soc_card *card = codec->component.card;
 	struct msm_asoc_mach_data *pdata = snd_soc_card_get_drvdata(card);
 	int ret;
@@ -355,11 +359,15 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 			pdata->spk_ext_pa_gpio);
 		return false;
 	}
+#endif
 
 	pr_debug("%s: %s external speaker PA\n", __func__,
 		enable ? "Enable" : "Disable");
 
 	if (enable) {
+#ifdef CONFIG_SND_SOC_AW87319
+		AW87319_Audio_Speaker();
+#else
 		ret =  msm_cdc_pinctrl_select_active_state(
 					pdata->spk_ext_pa_gpio_p);
 		if (ret) {
@@ -368,7 +376,11 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 			return ret;
 		}
 		gpio_set_value_cansleep(pdata->spk_ext_pa_gpio, enable);
+#endif
 	} else {
+#ifdef CONFIG_SND_SOC_AW87319
+		AW87319_Audio_OFF();
+#else
 		gpio_set_value_cansleep(pdata->spk_ext_pa_gpio, enable);
 		ret = msm_cdc_pinctrl_select_sleep_state(
 				pdata->spk_ext_pa_gpio_p);
@@ -377,6 +389,7 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 					__func__, "ext_spk_gpio");
 			return ret;
 		}
+#endif
 	}
 	return 0;
 }
@@ -803,16 +816,22 @@ static void msm8952_ext_hs_delay_enable(struct work_struct *work)
 
 static void msm8952_ext_spk_control(u32 enable)
 {
+#ifndef CONFIG_SND_SOC_AW87319
 	int i = 0;
+#endif
 
 	if (enable) {
 		/* Open external audio PA device */
+#ifdef CONFIG_SND_SOC_AW87319
+		AW87319_Audio_Speaker();
+#else
 		for (i = 0; i < AW8738_MODE; i++) {
 			gpio_direction_output(spk_pa_gpio, false);
 			gpio_direction_output(spk_pa_gpio, true);
 		}
 		usleep_range(EXT_CLASS_D_EN_DELAY,
 		EXT_CLASS_D_EN_DELAY + EXT_CLASS_D_DELAY_DELTA);
+#endif
 	} else {
 		gpio_direction_output(spk_pa_gpio, false);
 		/* time takes disable the external power amplifier */
@@ -826,6 +845,10 @@ static void msm8952_ext_spk_control(u32 enable)
 
 static void msm8952_ext_spk__delayed_enable(struct work_struct *work)
 {
+#ifdef CONFIG_SND_SOC_AW87319
+	/* Open external audio PA device */
+	AW87319_Audio_Speaker();
+#else
 	int i = 0;
 
 	/* Open external audio PA device */
@@ -835,25 +858,32 @@ static void msm8952_ext_spk__delayed_enable(struct work_struct *work)
 	}
 	usleep_range(EXT_CLASS_D_EN_DELAY,
 	EXT_CLASS_D_EN_DELAY + EXT_CLASS_D_DELAY_DELTA);
+#endif
 
 	pr_err("%s:  [hjf]  external speaker enable.\n", __func__);
 }
 
 static void msm8x16_ext_spk_delayed_dualmode(struct work_struct *work)
 {
+#ifndef CONFIG_SND_SOC_AW87319
 	int i = 0;
+#endif
 
 	/* Open the headset device */
 	gpio_direction_output(headset_gpio, true);
 	usleep_range(EXT_CLASS_D_EN_DELAY,
 		EXT_CLASS_D_EN_DELAY + EXT_CLASS_D_DELAY_DELTA);
 
+#ifdef CONFIG_SND_SOC_AW87319
+	AW87319_Audio_Speaker();
+#else
 	for (i = 0; i < AW8738_MODE; i++) {
 		gpio_direction_output(spk_pa_gpio, false);
 		gpio_direction_output(spk_pa_gpio, true);
 	}
 	usleep_range(EXT_CLASS_D_EN_DELAY,
 		EXT_CLASS_D_EN_DELAY + EXT_CLASS_D_DELAY_DELTA);
+#endif
 
 	pr_debug("%s: Enable external speaker PAs dualmode.\n", __func__);
 }
