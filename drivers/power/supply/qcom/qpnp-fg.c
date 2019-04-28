@@ -4811,19 +4811,12 @@ static int fg_power_set_property(struct power_supply *psy,
 		break;
 	case POWER_SUPPLY_PROP_HEALTH:
 		chip->health = val->intval;
-		if (chip->health == POWER_SUPPLY_HEALTH_GOOD) {
-			schedule_work(&chip->set_resume_soc_work);
-		}
-
 		if (chip->jeita_hysteresis_support)
 			fg_hysteresis_config(chip);
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_DONE:
 		chip->charge_done = val->intval;
-		if (!chip->resume_soc_lowered) {
-			schedule_work(&chip->set_resume_soc_work);
-		}
-		break;
+	        break;
 	case POWER_SUPPLY_PROP_CYCLE_COUNT_ID:
 		if ((val->intval > 0) && (val->intval <= BUCKET_COUNT)) {
 			chip->cyc_ctr.id = val->intval;
