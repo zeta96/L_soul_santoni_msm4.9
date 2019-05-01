@@ -1095,8 +1095,11 @@ int32_t msm_sensor_driver_probe(void *setting,
 	}
 	printk("camera sensor probe %s\n", slave_info->sensor_name);
 
-	rc = kobject_init_and_add(&kobj_back,  &ktype_back, NULL, "camera_fusion_id_back");
-	rc = kobject_init_and_add(&kobj_front,  &ktype_front, NULL, "camera_fusion_id_front");
+	if (!kobj_back.state_initialized)
+		rc = kobject_init_and_add(&kobj_back,  &ktype_back, NULL, "camera_fusion_id_back");
+	if (!kobj_front.state_initialized)
+		rc = kobject_init_and_add(&kobj_front,  &ktype_front, NULL,
+			"camera_fusion_id_front");
 #endif // CONFIG_MACH_XIAOMI_SANTONI
 
 	/* Extract s_ctrl from camera id */
