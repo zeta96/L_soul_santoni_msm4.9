@@ -49,8 +49,10 @@ int mdss_panel_debugfs_fbc_setup(struct mdss_panel_debugfs_info *debugfs_info,
 
 	fbc_root = debugfs_create_dir("fbc", parent);
 	if (IS_ERR_OR_NULL(fbc_root)) {
-		pr_err("Debugfs create fbc dir failed with error: %ld\n",
+#ifdef CONFIG_DEBUG_FS
+ 		pr_err("Debugfs create fbc dir failed with error: %ld\n",
 					PTR_ERR(fbc_root));
+#endif
 		return -ENODEV;
 	}
 
@@ -254,8 +256,10 @@ static int _create_phy_ctrl_nodes(struct mdss_panel_debugfs_info *debugfs_info,
 
 	phy_node = debugfs_create_dir("dsi_phy_ctrl", node);
 	if (IS_ERR_OR_NULL(phy_node)) {
+#ifdef CONFIG_DEBUG_FS
 		pr_err("Debugfs create phy ctrl node failed with error: %ld\n",
 					PTR_ERR(phy_node));
+#endif
 		return -ENODEV;
 	}
 
@@ -281,20 +285,26 @@ static int _create_dsi_panel_nodes(struct mdss_panel_debugfs_info *dfs,
 
 	lcdc_root = debugfs_create_dir("lcdc", parent);
 	if (IS_ERR_OR_NULL(lcdc_root)) {
+#ifdef CONFIG_DEBUG_FS
 		pr_err("Debugfs create lcdc dir failed with error: %ld\n",
 					PTR_ERR(lcdc_root));
+#endif
 		return -ENODEV;
 	}
 	mipi_root = debugfs_create_dir("mipi", parent);
 	if (IS_ERR_OR_NULL(mipi_root)) {
+#ifdef CONFIG_DEBUG_FS
 		pr_err("Debugfs create mipi dir failed with error: %ld\n",
 					PTR_ERR(mipi_root));
+#endif
 		return -ENODEV;
 	}
 	te_root = debugfs_create_dir("te", parent);
 	if (IS_ERR_OR_NULL(te_root)) {
+#ifdef CONFIG_DEBUG_FS
 		pr_err("Debugfs create te check dir failed with error: %ld\n",
 					PTR_ERR(te_root));
+#endif
 		return -ENODEV;
 	}
 
@@ -459,8 +469,10 @@ int mdss_panel_debugfs_setup(struct mdss_panel_info *panel_info, struct dentry
 	debugfs_info->parent = parent;
 	debugfs_info->root = debugfs_create_dir(intf_str, parent);
 	if (IS_ERR_OR_NULL(debugfs_info->root)) {
+#ifdef CONFIG_DEBUG_FS
 		pr_err("Debugfs create dir failed with error: %ld\n",
 					PTR_ERR(debugfs_info->root));
+#endif
 		kfree(debugfs_info);
 		return -ENODEV;
 	}
@@ -495,8 +507,10 @@ int mdss_panel_debugfs_init(struct mdss_panel_info *panel_info,
 	pdata = container_of(panel_info, struct mdss_panel_data, panel_info);
 	parent = debugfs_create_dir(panel_name, NULL);
 	if (IS_ERR_OR_NULL(parent)) {
+#ifdef CONFIG_DEBUG_FS
 		pr_err("Debugfs create dir failed with error: %ld\n",
 			PTR_ERR(parent));
+#endif
 		return -ENODEV;
 	}
 

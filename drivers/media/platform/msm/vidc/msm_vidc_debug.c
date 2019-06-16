@@ -241,12 +241,16 @@ struct dentry *msm_vidc_debugfs_init_core(struct msm_vidc_core *core,
 		goto failed_create_dir;
 	}
 	if (IS_ERR_OR_NULL(debugfs_create_file("info", 0444, dir, core, &core_info_fops))) {
+#ifdef CONFIG_DEBUG_FS
 		dprintk(VIDC_ERR, "debugfs_create_file: fail\n");
+#endif
 		goto failed_create_file;
 	}
 	if (IS_ERR_OR_NULL(debugfs_create_file("trigger_ssr", 0200,
 			dir, core, &ssr_fops))) {
+#ifdef CONFIG_DEBUG_FS
 		dprintk(VIDC_ERR, "debugfs_create_file: fail\n");
+#endif
 		goto failed_create_file;
 	}
 failed_create_file:
@@ -461,7 +465,9 @@ struct dentry *msm_vidc_debugfs_init_inst(struct msm_vidc_inst *inst,
 	info = debugfs_create_file("info", 0444, dir,
 			idata, &inst_info_fops);
 	if (IS_ERR_OR_NULL(info)) {
+#ifdef CONFIG_DEBUG_FS
 		dprintk(VIDC_ERR, "debugfs_create_file: fail\n");
+#endif
 		goto failed_create_file;
 	}
 
