@@ -1463,4 +1463,6 @@ config TOUCHSCREEN_DOUBLETAP2WAKE
 	depends on TOUCHSCREEN_FT5336
 	default n
 
+source "drivers/input/touchscreen/focaltech_touch_new/Kconfig"
+
 endif
