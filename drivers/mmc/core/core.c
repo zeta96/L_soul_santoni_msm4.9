@@ -39,9 +39,6 @@
 #include <linux/mmc/sd.h>
 #include <linux/mmc/slot-gpio.h>
 
-#define CREATE_TRACE_POINTS
-#include <trace/events/mmc.h>
-
 #include "core.h"
 #include "bus.h"
 #include "host.h"
@@ -467,16 +464,12 @@ int mmc_clk_update_freq(struct mmc_host *host,
 		goto invalid_state;
 	}
 
-	MMC_TRACE(host, "clock scale state %d freq %lu\n",
-			state, freq);
 	err = host->bus_ops->change_bus_speed(host, &freq);
 	if (!err)
 		host->clk_scaling.curr_freq = freq;
 	else
 		pr_err("%s: %s: failed (%d) at freq=%lu\n",
 			mmc_hostname(host), __func__, err, freq);
-	MMC_TRACE(host, "clock scale state %d freq %lu done with err %d\n",
-			state, freq, err);
 
 invalid_state:
 	if (cmdq_mode) {
@@ -1045,7 +1038,6 @@ void mmc_request_done(struct mmc_host *host, struct mmc_request *mrq)
 
 	mmc_complete_cmd(mrq);
 
-	trace_mmc_request_done(host, mrq);
 
 	if (err && cmd->retries && !mmc_card_removed(host->card)) {
 		/*
@@ -1166,7 +1158,6 @@ static void __mmc_start_request(struct mmc_host *host, struct mmc_request *mrq)
 		reinit_completion(&mrq->cmd_completion);
 	}
 
-	trace_mmc_request_start(host, mrq);
 
 	host->ops->request(host, mrq);
 }
@@ -2496,15 +2487,6 @@ void mmc_set_ios(struct mmc_host *host)
 		mmc_set_ungated(host);
 	host->ops->set_ios(host, ios);
 	if (ios->old_rate != ios->clock) {
-		if (likely(ios->clk_ts)) {
-			char trace_info[80];
-			snprintf(trace_info, 80,
-				"%s: freq_KHz %d --> %d | t = %d",
-				mmc_hostname(host), ios->old_rate / 1000,
-				ios->clock / 1000, jiffies_to_msecs(
-					(long)jiffies - (long)ios->clk_ts));
-			trace_mmc_clk(trace_info);
-		}
 		ios->old_rate = ios->clock;
 		ios->clk_ts = jiffies;
 	}
