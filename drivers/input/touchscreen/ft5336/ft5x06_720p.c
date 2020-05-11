@@ -54,7 +54,7 @@
 
 #if CTP_LOCKDOWN_INFO
 static u8 lockdown_info[FT_LOCKDOWN_SIZE];
-extern u8 tp_color;
+u8 tp_color;
 
 static u8 nomal_boot;
 #endif
