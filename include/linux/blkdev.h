@@ -519,6 +519,7 @@ struct request_queue {
 #define QUEUE_FLAG_INLINECRYPT 28	/* inline encryption support */
 
 #define QUEUE_FLAG_DEFAULT	((1 << QUEUE_FLAG_STACKABLE)	|	\
+				 (1 << QUEUE_FLAG_NONROT)	|	\
 				 (1 << QUEUE_FLAG_SAME_COMP)	|	\
 				 (1 << QUEUE_FLAG_SAME_FORCE)	|	\
 				 (1 << QUEUE_FLAG_NOXMERGES))
