@@ -1574,6 +1574,12 @@ static long msm_eeprom_subdev_fops_ioctl32(struct file *file, unsigned int cmd,
 
 #endif
 
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+static int module_id = -1;
+int main_module_id = -1;
+int sub_module_id = -1;
+#endif // CONFIG_MACH_XIAOMI_SANTONI
+
 static int msm_eeprom_platform_probe(struct platform_device *pdev)
 {
 	int rc = 0;
@@ -1722,7 +1728,232 @@ static int msm_eeprom_platform_probe(struct platform_device *pdev)
 		for (j = 0; j < e_ctrl->cal_data.num_data; j++)
 			CDBG("memory_data[%d] = 0x%X\n", j,
 				e_ctrl->cal_data.mapdata[j]);
-
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+		if (!strcmp(eb_info->eeprom_name, "s5k3l8_ofilm")) {
+			CDBG("match id for s5k3l8_ofilm\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for s5k3l8_ofilm module_id=%d\n", module_id);
+			if (module_id == 7) {
+				CDBG("match id for s5k3l8_ofilm success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k3l8_ofilm failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "s5k3l8_ofilm_riva")) {
+			CDBG("match id for s5k3l8_ofilm_riva\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for s5k3l8_ofilm_riva module_id=%d\n", module_id);
+			if (module_id == 7) {
+				CDBG("match id for s5k3l8_ofilm_riva success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k3l8_ofilm_riva failed\n", __func__);
+				goto power_down;
+			}
+		} else if (!strcmp(eb_info->eeprom_name, "s5k3l8_sunny")) {
+			CDBG("match id for s5k3l8_sunny\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for s5k3l8_sunny module_id=%d\n", module_id);
+			if (module_id == 1) {
+				CDBG("match id for s5k3l8_sunny success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k3l8_sunny failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "ov13855_qtech")) {
+			CDBG("match id for ov13855_qtech\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for ov13855_qtech module_id=%d\n", module_id);
+			if (module_id == 11) {
+				CDBG("match id for ov13855_qtech success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for ov13855_qtech failed\n", __func__);
+				goto power_down;
+			}
+		} else if (!strcmp(eb_info->eeprom_name, "ov13855_sunny")) {
+			CDBG("match id for ov13855_sunny\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for ov13855_sunny module_id=%d\n", module_id);
+			if (module_id == 1) {
+				CDBG("match id for ov13855_sunny success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for ov13855_sunny failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "ov13850")) {
+			CDBG("match id for ov13850\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for ov13850 module_id=%d\n", module_id);
+			if (module_id == 1) {
+				CDBG("match id for ov13850 success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for ov13850 failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "s5k3l2")) {
+			CDBG("match id for s5k3l2\n");
+			if (e_ctrl->cal_data.mapdata[0] == 0x55)  {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			}  else{
+				module_id = -1;
+			}
+			printk("match id for s5k3l2 module_id=%d\n", module_id);
+			if (module_id == 7) {
+				CDBG("match id for s5k3l2 success\n");
+				main_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k3l2 failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "ov5675_ofilm")) {
+			CDBG("match id for ov5675_ofilm\n");
+			if (e_ctrl->cal_data.mapdata[16] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[17] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[8] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[9] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[0] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			} else {
+				module_id = -1;
+			}
+			printk("match id for ov5675_ofilm module_id=%d\n", module_id);
+			if (module_id == 7) {
+				CDBG("match id for ov5670_ofilm success\n");
+				sub_module_id = module_id;
+			} else {
+				pr_err("%s match id for ov5670_ofilm failed\n", __func__);
+				goto power_down;
+			}
+		} else if (!strcmp(eb_info->eeprom_name, "s5k5e8_sunny")) {
+			CDBG("match id for s5k5e8_sunny\n");
+			if (e_ctrl->cal_data.mapdata[16] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[17] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[8] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[9] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[0] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			} else {
+				module_id = -1;
+			}
+			printk("match id for s5k5e8_sunny module_id=%d\n", module_id);
+			if (module_id == 1) {
+				CDBG("match id for s5k5e8_sunny success\n");
+				sub_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k5e8_sunny failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "s5k5e8_ofilm_riva")) {
+			CDBG("match id for s5k5e8_ofilm_riva\n");
+			if (e_ctrl->cal_data.mapdata[16] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[17] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[8] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[9] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[0] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			} else {
+				module_id = -1;
+			}
+			printk("match id for s5k5e8_ofilm_riva module_id=%d\n", module_id);
+			if (module_id == 7) {
+				CDBG("match id for s5k5e8_ofilm_riva success\n");
+				sub_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k5e8_ofilm_riva failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "ov5675")) {
+			CDBG("match id for ov5675\n");
+			if (e_ctrl->cal_data.mapdata[16] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[17] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[8] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[9] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[0] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			} else {
+				module_id = -1;
+			}
+			printk("match id for ov5675 module_id=%d\n", module_id);
+			if (module_id == 1) {
+				CDBG("match id for ov5675 success\n");
+				sub_module_id = module_id;
+			} else {
+				pr_err("%s match id for ov5670 failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "s5k5e8_qtech_riva")) {
+			CDBG("match id for s5k5e8_qtech_riva\n");
+			if (e_ctrl->cal_data.mapdata[16] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[17] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[8] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[9] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[0] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			} else {
+				module_id = -1;
+			}
+			printk("match id for s5k5e8_qtech_riva module_id=%d\n", module_id);
+			if (module_id == 11) {
+				CDBG("match id for s5k5e8_qtech_riva success\n");
+				sub_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k5e8_qtech_riva failed\n", __func__);
+				goto power_down;
+			}
+		}  else if (!strcmp(eb_info->eeprom_name, "s5k5e8")) {
+			CDBG("match id for s5k5e8\n");
+			if (e_ctrl->cal_data.mapdata[16] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[17] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[8] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[9] & 0x1f;
+			} else if (e_ctrl->cal_data.mapdata[0] == 0x55) {
+				module_id = e_ctrl->cal_data.mapdata[1] & 0x1f;
+			} else {
+				module_id = -1;
+			}
+			printk("match id for s5k5e8 module_id=%d\n", module_id);
+			if (module_id == 7) {
+				CDBG("match id for s5k5e8 success\n");
+				sub_module_id = module_id;
+			} else {
+				pr_err("%s match id for s5k5e8 failed\n", __func__);
+				goto power_down;
+			}
+		}  else {
+			pr_err("%s eeprom name match failed\n", __func__);
+			goto power_down;
+		}
+		CDBG("%s eeprom module id: main_module_id=%d  sub_module_id=%d\n", __func__, main_module_id, sub_module_id);
+#endif // CONFIG_MACH_XIAOMI_SANTONI
 		e_ctrl->is_supported |= msm_eeprom_match_crc(&e_ctrl->cal_data);
 
 		rc = msm_camera_power_down(power_info,

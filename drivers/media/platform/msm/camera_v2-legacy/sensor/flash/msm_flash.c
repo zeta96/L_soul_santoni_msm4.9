@@ -458,6 +458,10 @@ static int32_t msm_flash_i2c_write_setting_array(
 	return rc;
 }
 
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+struct msm_flash_ctrl_t *flash_ctrl_wt = NULL;
+#endif // CONFIG_MACH_XIAOMI_SANTONI
+
 static int32_t msm_flash_init(
 	struct msm_flash_ctrl_t *flash_ctrl,
 	struct msm_flash_cfg_data_t *flash_data)
@@ -624,6 +628,71 @@ static int32_t msm_flash_low(
 	return 0;
 }
 
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+static int32_t msm_gpio_flash_low(
+		struct msm_flash_ctrl_t *flash_ctrl,
+		struct msm_flash_cfg_data_t *flash_data)
+{
+	CDBG("Enter\n");
+	gpio_direction_output(93, 1);
+	return 0;
+}
+
+static int32_t msm_gpio_flash_high(
+		struct msm_flash_ctrl_t *flash_ctrl,
+		struct msm_flash_cfg_data_t *flash_data)
+{
+	CDBG("Enter\n");
+	gpio_direction_output(90, 1);
+	return 0;
+}
+
+static int32_t msm_gpio_flash_off(
+		struct msm_flash_ctrl_t *flash_ctrl,
+		struct msm_flash_cfg_data_t *flash_data)
+{
+	CDBG("Enter\n");
+	gpio_direction_output(90, 0);
+	gpio_direction_output(93, 0);
+	return 0;
+}
+
+
+int flag_led = 0;
+
+int32_t wt_flash_flashlight(bool boolean)
+{
+	uint32_t curr = 0;
+	int32_t i = 0;
+
+	if (boolean)
+		curr = 100;
+	else
+		curr = 0;
+
+	if (flag_led > 0 && boolean == 0) {
+		return 0;
+	}
+
+	if (flash_ctrl_wt)  {
+		CDBG("WT Enter\n");
+
+		CDBG("WT_XJB  flash_ctrl_wt->torch_num_sources = %d", flash_ctrl_wt->torch_num_sources);
+		for (i = 0; i < flash_ctrl_wt->torch_num_sources - 1; i++) {
+			CDBG("WT low_flash_current[%d] = %d\n", i, curr);
+			if (flash_ctrl_wt->torch_trigger[i]) {
+				led_trigger_event(flash_ctrl_wt->torch_trigger[i],
+						curr);
+			}
+		}
+		if (flash_ctrl_wt->switch_trigger)
+			led_trigger_event(flash_ctrl_wt->switch_trigger, 1);
+		CDBG("WT Exit\n");
+	}
+	return 0;
+}
+#endif // CONFIG_MACH_XIAOMI_SANTONI
+
 static int32_t msm_flash_high(
 	struct msm_flash_ctrl_t *flash_ctrl,
 	struct msm_flash_cfg_data_t *flash_data)
@@ -685,6 +754,16 @@ static int32_t msm_flash_config(struct msm_flash_ctrl_t *flash_ctrl,
 	mutex_lock(flash_ctrl->flash_mutex);
 
 	CDBG("Enter %s type %d\n", __func__, flash_data->cfg_type);
+
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+	if (flash_data->cfg_type == 2 && flag_led > 0) {
+		flag_led--;
+	} else if (flash_data->cfg_type == 3) {
+		flag_led++;
+	} else if (flash_data->cfg_type == 1) {
+		flag_led = 0;
+	}
+#endif // CONFIG_MACH_XIAOMI_SANTONI
 
 	switch (flash_data->cfg_type) {
 	case CFG_FLASH_INIT:
@@ -1272,6 +1351,10 @@ static int32_t msm_flash_platform_probe(struct platform_device *pdev)
 
 	if (flash_ctrl->flash_driver_type == FLASH_DRIVER_PMIC)
 		rc = msm_torch_create_classdev(pdev, flash_ctrl);
+		
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+	flash_ctrl_wt = flash_ctrl;
+#endif // CONFIG_MACH_XIAOMI_SANTONI
 
 	CDBG("probe success\n");
 	return rc;
@@ -1342,9 +1425,15 @@ static struct msm_flash_table msm_gpio_flash_table = {
 	.func_tbl = {
 		.camera_flash_init = msm_flash_gpio_init,
 		.camera_flash_release = msm_flash_release,
+#if defined(CONFIG_MACH_XIAOMI_SANTONI)
+		.camera_flash_off = msm_gpio_flash_off,
+		.camera_flash_low = msm_gpio_flash_low,
+		.camera_flash_high = msm_gpio_flash_high,
+#else
 		.camera_flash_off = msm_flash_off,
 		.camera_flash_low = msm_flash_low,
 		.camera_flash_high = msm_flash_high,
+#endif // CONFIG_MACH_XIAOMI_SANTONI
 	},
 };
 
