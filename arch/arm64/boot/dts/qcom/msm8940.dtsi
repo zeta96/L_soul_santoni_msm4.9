@@ -542,7 +542,7 @@
 	qcom,pvs-version-fuse-sel = <37 40 3 0>; /* foundry */
 	qcom,cpr-speed-bin-max-corners =
 		<0 (-1) 1 2 6>,
-		<1 (-1) 1 2 7>;
+		<1 (-1) 1 2 6>;
 
 	qcom,cpr-fuse-version-map =
 		<  0    0  (-1) (-1) (-1) (-1)>,
