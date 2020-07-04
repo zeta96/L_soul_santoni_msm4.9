@@ -26,6 +26,7 @@
  */
 
 unsigned int sysctl_sched_boost;
+extern unsigned int sysctl_sched_energy_aware;
 
 #ifdef CONFIG_SCHED_WALT
 static enum sched_boost_policy boost_policy;
@@ -222,9 +223,15 @@ int sched_boost_handler(struct ctl_table *table, int write,
 	if (ret || !write)
 		goto done;
 
-#ifdef CONFIG_SCHED_WALT
 	if (verify_boost_params(old_val, *data)) {
+#ifdef CONFIG_SCHED_WALT
 		_sched_set_boost(old_val, *data);
+#else
+		if (*data == 1)
+			sysctl_sched_energy_aware = 0;
+		else
+			sysctl_sched_energy_aware = 1;
+#endif
 	} else {
 		/*
 		 * Only return error when switching from one boost type
@@ -235,7 +242,6 @@ int sched_boost_handler(struct ctl_table *table, int write,
 			ret = -EINVAL;
 		}
 	}
-#endif
 
 done:
 #ifdef CONFIG_SCHED_WALT
