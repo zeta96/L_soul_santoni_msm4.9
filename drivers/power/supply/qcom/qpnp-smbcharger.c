@@ -431,7 +431,7 @@ module_param_named(
 	debug_mask, smbchg_debug_mask, int, 00600
 );
 
-static int smbchg_parallel_en = 1;
+static int smbchg_parallel_en = 0;
 module_param_named(
 	parallel_en, smbchg_parallel_en, int, 00600
 );
@@ -448,7 +448,7 @@ module_param_named(
 	int, 00600
 );
 
-static int smbchg_default_hvdcp_icl_ma = 1800;
+static int smbchg_default_hvdcp_icl_ma = 2000;
 module_param_named(
 	default_hvdcp_icl_ma, smbchg_default_hvdcp_icl_ma,
 	int, 00600
@@ -460,7 +460,7 @@ module_param_named(
 	int, 00600
 );
 
-static int smbchg_default_dcp_icl_ma = 1800;
+static int smbchg_default_dcp_icl_ma = 2000;
 module_param_named(
 	default_dcp_icl_ma, smbchg_default_dcp_icl_ma,
 	int, 00600
@@ -6092,7 +6092,7 @@ static int smbchg_battery_get_property(struct power_supply *psy,
 		val->intval = get_prop_batt_health(chip);
 		break;
 	case POWER_SUPPLY_PROP_TECHNOLOGY:
-		val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
+		val->intval = POWER_SUPPLY_TECHNOLOGY_LIPO;
 		break;
 	case POWER_SUPPLY_PROP_FLASH_CURRENT_MAX:
 		val->intval = smbchg_calc_max_flash_current(chip);

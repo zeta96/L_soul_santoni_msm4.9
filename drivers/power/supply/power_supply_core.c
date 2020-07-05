@@ -157,6 +157,24 @@ static void power_supply_deferred_register_work(struct work_struct *work)
 		mutex_unlock(&psy->dev.parent->mutex);
 }
 
+int power_supply_get_battery_charge_state(struct power_supply *psy)
+{
+	union power_supply_propval ret = {0,};
+
+	if (!psy) {
+		pr_err("power supply is NULL\n");
+	}
+
+	if (psy->desc->get_property) {
+		psy->desc->get_property(psy, POWER_SUPPLY_PROP_PRESENT,  &ret);
+	}
+
+	pr_debug("online:%d\n", ret.intval);
+
+	return ret.intval;
+}
+EXPORT_SYMBOL(power_supply_get_battery_charge_state);
+
 #ifdef CONFIG_OF
 #include <linux/of.h>
 
