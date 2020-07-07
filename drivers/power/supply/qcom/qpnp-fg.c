@@ -5215,7 +5215,6 @@ static irqreturn_t fg_vbatt_low_handler(int irq, void *_chip)
 			disable_irq_wake(chip->batt_irq[VBATT_LOW].irq);
 			disable_irq_nosync(chip->batt_irq[VBATT_LOW].irq);
 			chip->vbat_low_irq_enabled = false;
-			fg_stay_awake(&chip->empty_check_wakeup_source);
 			mod_delayed_work(system_freezable_power_efficient_wq,
 				&chip->check_empty_work,
 				msecs_to_jiffies(FG_EMPTY_DEBOUNCE_MS));
@@ -5345,7 +5344,6 @@ static irqreturn_t fg_soc_irq_handler(int irq, void *_chip)
 	if (chip->use_vbat_low_empty_soc) {
 		msoc = get_monotonic_soc_raw(chip);
 		if (msoc == 0 || chip->soc_empty) {
-			fg_stay_awake(&chip->empty_check_wakeup_source);
 			mod_delayed_work(system_freezable_power_efficient_wq,
 				&chip->check_empty_work,
 				msecs_to_jiffies(FG_EMPTY_DEBOUNCE_MS));
