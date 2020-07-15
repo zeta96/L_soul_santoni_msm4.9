@@ -24,7 +24,7 @@
 	interrupt-parent = <&wakegic>;
 
 	chosen {
-		bootargs = "kpti=0 noirqdebug quiet";
+		bootargs = "kpti=0 noirqdebug quiet nodebugmon";
 	};
 
 	firmware: firmware {
