@@ -183,7 +183,7 @@ int aw2013_set_color_singlecolor(struct aw2013_dev_data *aw2013)
 		}
 
 		aw2013_i2c_write(0x01, 0xe1);
-		printk("tp_color:%d", tp_color);
+		pr_debug("tp_color:%d", tp_color);
 		switch (tp_color) {
 		case 0x31:
 			if (red_on)
@@ -192,7 +192,7 @@ int aw2013_set_color_singlecolor(struct aw2013_dev_data *aw2013)
 				aw2013_i2c_write(0x32, blink_flag | 0x63);
 			if (blue_on)
 				aw2013_i2c_write(0x33, blink_flag | 0x63);
-			printk("tp_color is white\n");
+			pr_debug("tp_color is white\n");
 			break;
 		case 0x34:
 			if (red_on)
@@ -201,7 +201,7 @@ int aw2013_set_color_singlecolor(struct aw2013_dev_data *aw2013)
 				aw2013_i2c_write(0x32, blink_flag | 0x63);
 			if (blue_on)
 				aw2013_i2c_write(0x33, blink_flag | 0x63);
-			printk("tp_color is yellow\n");
+			pr_debug("tp_color is yellow\n");
 			break;
 		case 0x38:
 			if (red_on)
@@ -210,7 +210,7 @@ int aw2013_set_color_singlecolor(struct aw2013_dev_data *aw2013)
 				aw2013_i2c_write(0x32, blink_flag | 0x63);
 			if (blue_on)
 				aw2013_i2c_write(0x33, blink_flag | 0x63);
-			printk("tp_color is golden\n");
+			pr_debug("tp_color is golden\n");
 			break;
 		default:
 			if (red_on)
@@ -219,7 +219,7 @@ int aw2013_set_color_singlecolor(struct aw2013_dev_data *aw2013)
 				aw2013_i2c_write(0x32, blink_flag | 0x62);
 			if (blue_on)
 				aw2013_i2c_write(0x33, blink_flag | 0x62);
-			printk("tp_color is black\n");
+			pr_debug("tp_color is black\n");
 			break;
 		}
 		if (red_on)
