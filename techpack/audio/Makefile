@@ -61,8 +61,7 @@ else
   endif
 endif
 ifeq ($(CONFIG_MACH_XIAOMI_SANTONI), y)
-CONFIG_SND_SOC_AW87319=y
-export
+export CONFIG_SND_SOC_AW87319=y
 endif
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
