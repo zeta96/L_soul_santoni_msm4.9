@@ -82,7 +82,6 @@ struct gf_key_map key_map[] = {
 };
 
 /**************************debug******************************/
-#define GF_DEBUG
 
 
 #ifdef GF_DEBUG
