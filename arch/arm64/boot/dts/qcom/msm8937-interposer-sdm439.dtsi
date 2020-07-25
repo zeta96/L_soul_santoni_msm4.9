@@ -34,13 +34,13 @@
 		compatible = "qcom,csiphy-v3.4.2", "qcom,csiphy";
 	};
 	qcom,csid@1b30000 {
-		qcom,mipi-csi-vdd-supply = <&pm8953_l2>;
+		/delete-property/ qcom,mipi-csi-vdd-supply;
 	};
 	qcom,csid@1b30400 {
-		qcom,mipi-csi-vdd-supply = <&pm8953_l2>;
+		/delete-property/ qcom,mipi-csi-vdd-supply;
 	};
 	qcom,csid@1b30800 {
-		qcom,mipi-csi-vdd-supply = <&pm8953_l2>;
+		/delete-property/ qcom,mipi-csi-vdd-supply;
 	};
 
 	mem_acc_vreg_corner: regulator@01946004 {
