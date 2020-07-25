@@ -105,7 +105,7 @@ bool blink_frequency_adjust;
 extern u8 tp_color;
 
 typedef unsigned char U8;
-static int aw2013_debug_enable;
+static int aw2013_debug_enable = 0;
 #define AW2013_DEBUG(format, args...) do { \
 	if (aw2013_debug_enable) { \
 		printk(format, ##args);\
