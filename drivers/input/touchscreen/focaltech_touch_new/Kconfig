@@ -12,3 +12,12 @@ config TOUCHSCREEN_FTS_DIRECTORY_NEW
 	string "Focaltech ts directory name"
 	default "focaltech_touch_new"
 	depends on TOUCHSCREEN_FTS_NEW
+
+config FTS_TRUSTED_TOUCH_NEW
+	bool "Focaltech Trusted Touch"
+	depends on TOUCHSCREEN_FTS_NEW
+	help
+	  Say Y here to enable Focaltech Trusted Touch.
+	  If unsure, say N.
+
+#endif
