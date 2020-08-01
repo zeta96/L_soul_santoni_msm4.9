@@ -651,8 +651,7 @@ CDEFINES +=	-DWLAN_DEBUG \
 		-DWLAN_FEATURE_NEIGHBOR_ROAMING_DEBUG \
 		-DWLAN_FEATURE_VOWIFI_11R_DEBUG \
                 -DWLAN_VOWIFI_DEBUG \
-                -DWLANTL_DEBUG\
-		-DDEBUG
+                -DWLANTL_DEBUG
 endif
 
 ifeq ($(BUILD_DIAG_VERSION),1)
@@ -778,7 +777,7 @@ CDEFINES += -DEXISTS_MSM_SMSM
 endif
 
 # Fix build for GCC 4.7
-EXTRA_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+EXTRA_CFLAGS += -DNDEBUG $(call cc-disable-warning, maybe-uninitialized)
 
 # Silence Clang warning
 EXTRA_CFLAGS += $(call cc-disable-warning, enum-conversion)
