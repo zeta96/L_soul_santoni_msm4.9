@@ -803,7 +803,7 @@ static void msm8952_ext_hs_control(u32 enable)
 {
 
 	gpio_direction_output(headset_gpio, enable);
-	pr_err("%s: %s [zjm]  headset 111PAs.\n", __func__,
+	pr_debug("%s: %s [zjm]  headset 111PAs.\n", __func__,
 	  enable ? "Enable" : "Disable");
 }
 
@@ -811,7 +811,7 @@ static void msm8952_ext_hs_delay_enable(struct work_struct *work)
 {
 
 	gpio_direction_output(headset_gpio, true);
-	pr_err("%s:  [zjm]  headset 111PAs.\n", __func__);
+	pr_debug("%s:  [zjm]  headset 111PAs.\n", __func__);
 }
 
 static void msm8952_ext_spk_control(u32 enable)
@@ -839,7 +839,7 @@ static void msm8952_ext_spk_control(u32 enable)
 		EXT_CLASS_D_DIS_DELAY + EXT_CLASS_D_DELAY_DELTA);
 	}
 
-	pr_err("%s: %s [hjf]  external speaker 222PAs.\n", __func__,
+	pr_debug("%s: %s [hjf]  external speaker 222PAs.\n", __func__,
 		enable ? "Enable" : "Disable");
 }
 
@@ -860,7 +860,7 @@ static void msm8952_ext_spk__delayed_enable(struct work_struct *work)
 	EXT_CLASS_D_EN_DELAY + EXT_CLASS_D_DELAY_DELTA);
 #endif
 
-	pr_err("%s:  [hjf]  external speaker enable.\n", __func__);
+	pr_debug("%s:  [hjf]  external speaker enable.\n", __func__);
 }
 
 static void msm8x16_ext_spk_delayed_dualmode(struct work_struct *work)
@@ -891,7 +891,7 @@ static void msm8x16_ext_spk_delayed_dualmode(struct work_struct *work)
 static int headset_status_get(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
-	pr_err("%s: [hjf] get1111\n", __func__);
+	pr_debug("%s: [hjf] get1111\n", __func__);
 	return 0;
 }
 
@@ -900,7 +900,7 @@ static int headset_status_put(struct snd_kcontrol *kcontrol,
 {
 	int state = 0;
 	state = ucontrol->value.integer.value[0];
-	pr_err("%s: [hjf]  external speaker PAAA mode:%d\n", __func__, state);
+	pr_debug("%s: [hjf]  external speaker PAAA mode:%d\n", __func__, state);
 
 	switch (state) {
 	case 1:
@@ -910,7 +910,7 @@ static int headset_status_put(struct snd_kcontrol *kcontrol,
 		msm8952_ext_hs_control(0);
 		break;
 	default:
-		pr_err("%s: [hjf]  Unexpected input value\n", __func__);
+		pr_debug("%s: [hjf]  Unexpected input value\n", __func__);
 		break;
 	}
 	return 0;
@@ -919,7 +919,7 @@ static int headset_status_put(struct snd_kcontrol *kcontrol,
 static int lineout_status_get(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
-	pr_err("%s: [hjf] get222\n", __func__);
+	pr_debug("%s: [hjf] get222\n", __func__);
 	return 0;
 }
 static int lineout_status_put(struct snd_kcontrol *kcontrol,
@@ -927,7 +927,7 @@ static int lineout_status_put(struct snd_kcontrol *kcontrol,
 {
 	int state = 0;
 	state = ucontrol->value.integer.value[0];
-	pr_err("%s: [hjf]  external speaker PA mode:%d\n", __func__, state);
+	pr_debug("%s: [hjf]  external speaker PA mode:%d\n", __func__, state);
 
 	switch (state) {
 	case 1:
@@ -940,7 +940,7 @@ static int lineout_status_put(struct snd_kcontrol *kcontrol,
 		schedule_delayed_work(&lineout_amp_dualmode, msecs_to_jiffies(50));
 		break;
 	default:
-		pr_err("%s: [hjf]  Unexpected input value\n", __func__);
+		pr_debug("%s: [hjf]  Unexpected input value\n", __func__);
 		break;
 	}
 	return 0;
