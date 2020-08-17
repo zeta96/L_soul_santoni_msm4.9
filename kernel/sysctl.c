@@ -1471,7 +1471,7 @@ static struct ctl_table vm_table[] = {
 		.extra1		= &dirty_bytes_min,
 	},
 	{
-		.procname	= "dirty_writeback_centisecs",
+		.procname	= "dirty_writeback_centisecs_nosys",
 		.data		= &dirty_writeback_interval,
 		.maxlen		= sizeof(dirty_writeback_interval),
 		.mode		= 0644,
