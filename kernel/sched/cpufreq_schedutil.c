@@ -157,7 +157,7 @@ static void sugov_update_commit(struct sugov_policy *sg_policy, u64 time,
 		policy->cur = next_freq;
 		trace_cpu_frequency(next_freq, smp_processor_id());
 	} else {
-		if (likely(use_pelt()))
+		if (use_pelt())
 			sg_policy->work_in_progress = true;
 		sched_irq_work_queue(&sg_policy->irq_work);
 	}
@@ -312,7 +312,7 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
 	if (!sugov_should_update_freq(sg_policy, time))
 		return;
 
-	busy = likely(use_pelt()) && sugov_cpu_is_busy(sg_cpu);
+	busy = use_pelt() && sugov_cpu_is_busy(sg_cpu);
 
 	if (flags & SCHED_CPUFREQ_DL) {
 		/* clear cache when it's bypassed */
@@ -427,7 +427,7 @@ static void sugov_work(struct kthread_work *work)
 				CPUFREQ_RELATION_L);
 	mutex_unlock(&sg_policy->work_lock);
 
-	if (likely(use_pelt()))
+	if (use_pelt())
 		sg_policy->work_in_progress = false;
 }
 
