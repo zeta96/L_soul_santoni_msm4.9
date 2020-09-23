@@ -24,7 +24,7 @@
 	interrupt-parent = <&wakegic>;
 
 	chosen {
-		bootargs = "kpti=0 noirqdebug norandmaps quiet nodebugmon rcu_nocbs=0-7";
+		bootargs = "kpti=0 noirqdebug norandmaps quiet nodebugmon rcu_nocbs=0-7 cgroup.memory=nokmem,nosocket";
 	};
 
 	firmware: firmware {
