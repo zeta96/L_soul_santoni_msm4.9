@@ -282,7 +282,7 @@ static void cam_smmu_check_vaddr_in_range(int idx, void *vaddr)
 		end_addr = (unsigned long)mapping->paddr + mapping->len;
 
 		if (start_addr <= current_addr && current_addr < end_addr) {
-			pr_err("Error: va %pK is valid: range:%pK-%pK, fd = %d cb: %s\n",
+			pr_debug("Error: va %pK is valid: range:%pK-%pK, fd = %d cb: %s\n",
 				vaddr, (void *)start_addr, (void *)end_addr,
 				mapping->ion_fd,
 				iommu_cb_set.cb_info[idx].name);
@@ -293,11 +293,11 @@ static void cam_smmu_check_vaddr_in_range(int idx, void *vaddr)
 				mapping->ion_fd);
 	}
 	if (!strcmp(iommu_cb_set.cb_info[idx].name, "vfe"))
-		pr_err_ratelimited("Cannot find vaddr:%pK in SMMU.\n"
+		pr_debug("Cannot find vaddr:%pK in SMMU.\n"
 			" %s uses invalid virtual address\n",
 			vaddr, iommu_cb_set.cb_info[idx].name);
 	else
-		pr_err("Cannot find vaddr:%pK in SMMU.\n"
+		pr_debug("Cannot find vaddr:%pK in SMMU.\n"
 			" %s uses invalid virtual address\n",
 			vaddr, iommu_cb_set.cb_info[idx].name);
 }

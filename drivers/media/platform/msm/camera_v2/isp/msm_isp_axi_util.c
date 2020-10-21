@@ -1772,7 +1772,7 @@ void msm_isp_halt_send_error(struct vfe_device *vfe_dev, uint32_t event)
 			spin_unlock_irqrestore(
 				&vfe_dev->common_data->common_dev_data_lock,
 				flags);
-			pr_err("%s:skip the recovery as no active streams\n",
+			pr_debug("%s:skip the recovery as no active streams\n",
 				 __func__);
 			return;
 		}
@@ -1783,7 +1783,7 @@ void msm_isp_halt_send_error(struct vfe_device *vfe_dev, uint32_t event)
 
 	if (event == ISP_EVENT_PING_PONG_MISMATCH &&
 		vfe_dev->axi_data.recovery_count < MAX_RECOVERY_THRESHOLD) {
-		pr_err("%s: ping pong mismatch on vfe%d recovery count %d\n",
+		pr_debug("%s: ping pong mismatch on vfe%d recovery count %d\n",
 			__func__, vfe_dev->pdev->id,
 			vfe_dev->axi_data.recovery_count);
 		msm_isp_process_overflow_irq(vfe_dev,
@@ -1797,7 +1797,7 @@ void msm_isp_halt_send_error(struct vfe_device *vfe_dev, uint32_t event)
 	halt_cmd.overflow_detected = 0;
 	halt_cmd.blocking_halt = 0;
 
-	pr_err("%s: vfe%d fatal error!\n", __func__, vfe_dev->pdev->id);
+	pr_debug("%s: vfe%d fatal error!\n", __func__, vfe_dev->pdev->id);
 
 	atomic_set(&vfe_dev->error_info.overflow_state,
 		HALT_ENFORCED);
@@ -1839,7 +1839,7 @@ int msm_isp_print_ping_pong_address(struct vfe_device *vfe_dev,
 
 			buf = stream_info->buf[pingpong_bit];
 			if (buf == NULL) {
-				pr_err("%s: buf NULL for stream %x num_isp %d\n",
+				pr_debug("%s: buf NULL for stream %x num_isp %d\n",
 					__func__,
 					stream_info->stream_src,
 					stream_info->num_isp);
@@ -1847,7 +1847,7 @@ int msm_isp_print_ping_pong_address(struct vfe_device *vfe_dev,
 			}
 			temp = buf->mapped_info[0].paddr +
 				buf->mapped_info[0].len;
-			pr_err("%s: stream %x ping bit %d uses buffer %pK-%pK, num_isp %d\n",
+			pr_debug("%s: stream %x ping bit %d uses buffer %pK-%pK, num_isp %d\n",
 				__func__, stream_info->stream_src,
 				pingpong_bit,
 				&buf->mapped_info[0].paddr, &temp,
@@ -2019,7 +2019,7 @@ static int msm_isp_cfg_ping_pong_address(
 
 	/* return if buffer already present */
 	if (stream_info->buf[!pingpong_bit]) {
-		pr_err("stream %x buffer already set for pingpong %d\n",
+		pr_debug("stream %x buffer already set for pingpong %d\n",
 			stream_info->stream_src, !pingpong_bit);
 		return 1;
 	}
