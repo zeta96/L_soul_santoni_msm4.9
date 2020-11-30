@@ -5146,7 +5146,7 @@ static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 
 		rc = selinux_nlmsg_lookup(sclass, nlh->nlmsg_type, &perm);
 		if (rc == 0) {
-			rc = sock_has_perm(current, sk, perm);
+			rc = sock_has_perm(sk, perm);
 			if (rc)
 				return rc;
 		} else if (rc == -EINVAL) {
