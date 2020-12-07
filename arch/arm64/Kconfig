@@ -210,7 +210,13 @@ config RWSEM_XCHGADD_ALGORITHM
 config GENERIC_BUG
 	def_bool y
 	depends on BUG
-
+	
+config THERMAL_SWITCH
+        default n
+	bool "Support thermal config switch"
+	help
+	  Support thermal config switch.
+	  
 config GENERIC_BUG_RELATIVE_POINTERS
 	def_bool y
 	depends on GENERIC_BUG
