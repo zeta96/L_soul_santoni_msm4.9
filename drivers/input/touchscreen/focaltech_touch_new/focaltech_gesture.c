@@ -91,6 +91,7 @@ struct fts_gesture_st {
 * Static variables
 *****************************************************************************/
 static struct fts_gesture_st fts_gesture_data;
+extern bool new_fts_gesture_enable;
 
 /*****************************************************************************
 * Global variable or extern global variabls/functions
@@ -109,7 +110,7 @@ static ssize_t fts_gesture_show(
 	mutex_lock(&ts_data->input_dev->mutex);
 	fts_read_reg(FTS_REG_GESTURE_EN, &val);
 	count = snprintf(buf, PAGE_SIZE, "Gesture Mode:%s\n",
-			ts_data->gesture_mode ? "On" : "Off");
+			new_fts_gesture_enable ? "On" : "Off");
 	count += snprintf(buf + count, PAGE_SIZE, "Reg(0xD0)=%d\n", val);
 	mutex_unlock(&ts_data->input_dev->mutex);
 
@@ -125,10 +126,10 @@ static ssize_t fts_gesture_store(
 	mutex_lock(&ts_data->input_dev->mutex);
 	if (FTS_SYSFS_ECHO_ON(buf)) {
 		FTS_DEBUG("enable gesture");
-		ts_data->gesture_mode = ENABLE;
+		new_fts_gesture_enable = ENABLE;
 	} else if (FTS_SYSFS_ECHO_OFF(buf)) {
 		FTS_DEBUG("disable gesture");
-		ts_data->gesture_mode = DISABLE;
+		new_fts_gesture_enable = DISABLE;
 	}
 	mutex_unlock(&ts_data->input_dev->mutex);
 
@@ -309,7 +310,7 @@ int fts_gesture_readdata(struct fts_ts_data *ts_data, u8 *data)
 	struct input_dev *input_dev = ts_data->input_dev;
 	struct fts_gesture_st *gesture = &fts_gesture_data;
 
-	if (!ts_data->suspended || !ts_data->gesture_mode) {
+	if (!ts_data->suspended || !new_fts_gesture_enable) {
 		return 1;
 	}
 
@@ -351,7 +352,7 @@ int fts_gesture_readdata(struct fts_ts_data *ts_data, u8 *data)
 
 void fts_gesture_recovery(struct fts_ts_data *ts_data)
 {
-	if (ts_data->gesture_mode && ts_data->suspended) {
+	if (new_fts_gesture_enable && ts_data->suspended) {
 		FTS_DEBUG("gesture recovery...");
 		fts_write_reg(0xD1, 0xFF);
 		fts_write_reg(0xD2, 0xFF);
@@ -462,7 +463,7 @@ int fts_gesture_init(struct fts_ts_data *ts_data)
 	fts_create_gesture_sysfs(ts_data->dev);
 
 	memset(&fts_gesture_data, 0, sizeof(struct fts_gesture_st));
-	ts_data->gesture_mode = FTS_GESTURE_EN;
+	new_fts_gesture_enable = FTS_GESTURE_EN;
 
 	FTS_FUNC_EXIT();
 	return 0;

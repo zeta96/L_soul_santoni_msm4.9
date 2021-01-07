@@ -85,6 +85,7 @@
 * Global variable or extern global variabls/functions
 *****************************************************************************/
 struct fts_ts_data *fts_data;
+bool new_fts_gesture_enable = true;
 
 #if defined(CONFIG_DRM)
 static struct drm_panel *active_panel;
@@ -1736,7 +1737,7 @@ static int fts_read_touchdata(struct fts_ts_data *data)
 	memset(buf, 0xFF, data->pnt_buf_size);
 	buf[0] = 0x01;
 
-	if (data->gesture_mode) {
+	if (new_fts_gesture_enable) {
 		if (0 == fts_gesture_readdata(data, NULL)) {
 			FTS_INFO("succuss to get gesture data in irq handler");
 			return 1;
@@ -2875,7 +2876,7 @@ static int fts_ts_suspend(struct device *dev)
 	fts_esdcheck_suspend();
 #endif
 
-	if (ts_data->gesture_mode) {
+	if (new_fts_gesture_enable) {
 		fts_gesture_suspend(ts_data);
 	} else {
 		fts_irq_disable();
@@ -2933,7 +2934,7 @@ static int fts_ts_resume(struct device *dev)
 	fts_esdcheck_resume();
 #endif
 
-	if (ts_data->gesture_mode) {
+	if (new_fts_gesture_enable) {
 		fts_gesture_resume(ts_data);
 	} else {
 		fts_irq_enable();
