@@ -1428,6 +1428,7 @@ static int fts_read_bootid(struct fts_ts_data *ts_data, u8 *id)
 *****************************************************************************/
 static int fts_get_ic_information(struct fts_ts_data *ts_data)
 {
+#ifndef CONFIG_MACH_XIAOMI_SANTONI
 	int ret = 0;
 	int cnt = 0;
 	u8 chip_id[2] = { 0 };
@@ -1476,7 +1477,7 @@ static int fts_get_ic_information(struct fts_ts_data *ts_data)
 
 	FTS_INFO("get ic information, chip id = 0x%02x%02x",
 		ts_data->ic_info.ids.chip_idh, ts_data->ic_info.ids.chip_idl);
-
+#endif
 	return 0;
 }
 
