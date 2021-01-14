@@ -61,7 +61,7 @@
 #include <linux/sched.h>
 #include <linux/kthread.h>
 #include <linux/dma-mapping.h>
-#include <linux/haven/hh_irq_lend.h>
+/* #include <linux/haven/hh_irq_lend.h> */
 #include "focaltech_common.h"
 
 /*****************************************************************************
