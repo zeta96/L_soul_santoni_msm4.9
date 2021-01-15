@@ -56,7 +56,7 @@
        qcom,battery-data = <&qrd_batterydata>;
        qcom,float-voltage-mv = <4400>;
        qcom,chg-inhibit-fg;
-       qcom,thermal-mitigation = <2000 1500 1200 700 0>;
+       qcom,thermal-mitigation = <1600 1500 1400 1200 1000 700 500 300 0>;
        status = "okay";
        qcom,vchg_sns-vadc = <&pmi8950_vadc>;
        qcom,vchg-adc-channel-id = <3>;
