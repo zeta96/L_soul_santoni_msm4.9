@@ -26,10 +26,6 @@
 #define CDBG(fmt, args...) pr_debug(fmt, ##args)
 
 #define SENSOR_MAX_MOUNTANGLE (360)
-#if defined(CONFIG_MACH_XIAOMI_SANTONI)
-char fusionid_back[64] = { 0 };
-char fusionid_front[64] = { 0 };
-#endif
 
 static struct v4l2_file_operations msm_sensor_v4l2_subdev_fops;
 static int32_t msm_sensor_driver_platform_probe(struct platform_device *pdev);
@@ -705,66 +701,6 @@ static const char *module_info[] = {
 	"Unknow",
 };
 
-ssize_t kobj_fusion_id_show_back(struct kobject *kobject, struct attribute *attr, char *buf);
-struct attribute camera_attr_back = {
-	.name = "fusion_id_back",
-	.mode = S_IRWXUGO,
-};
-
-static struct attribute *def_attrs_back[] = {
-	&camera_attr_back,
-	NULL,
-};
-
-struct sysfs_ops obj_camera_sysops_back = {
-	.show = kobj_fusion_id_show_back,
-	.store = NULL,
-};
-
-struct kobj_type ktype_back = {
-	.release = NULL,
-	.sysfs_ops =  &obj_camera_sysops_back,
-	.default_attrs = def_attrs_back,
-};
-
-extern char fusionid_back[];
-ssize_t kobj_fusion_id_show_back(struct kobject *kobject, struct attribute *attr, char *buf)
-{
-	CDBG("back_attrname:%s", attr->name);
-	return sprintf(buf, "%s", fusionid_back);
-}
-
-struct kobject kobj_back;
-ssize_t kobj_fusion_id_show_front(struct kobject *kobject, struct attribute *attr, char *buf);
-struct attribute camera_attr_front = {
-	.name = "fusion_id_front",
-	.mode = S_IRWXUGO,
-};
-
-static struct attribute *def_attrs_front[] = {
-	&camera_attr_front,
-	NULL,
-};
-
-struct sysfs_ops obj_camera_sysops_front = {
-	.show = kobj_fusion_id_show_front,
-	.store = NULL,
-};
-
-struct kobj_type ktype_front = {
-	.release = NULL,
-	.sysfs_ops =  &obj_camera_sysops_front,
-	.default_attrs = def_attrs_front,
-};
-
-ssize_t kobj_fusion_id_show_front(struct kobject *kobject, struct attribute *attr, char *buf)
-{
-	CDBG("front_attrname:%s", attr->name);
-	return sprintf(buf, "%s", fusionid_front);
-}
-
-struct kobject kobj_front;
-
 static uint16_t fusion_read_id_s5k3l8(struct msm_sensor_ctrl_t *s_ctrl)
 {
 	uint16_t value1, value3, value5;
@@ -772,7 +708,6 @@ static uint16_t fusion_read_id_s5k3l8(struct msm_sensor_ctrl_t *s_ctrl)
 	struct msm_camera_i2c_client *sensor_i2c_client;
 	sensor_i2c_client = s_ctrl->sensor_i2c_client;
 
-	memset(fusionid_back, 0, sizeof(fusionid_back));
 	sensor_i2c_client->i2c_func_tbl->i2c_write(sensor_i2c_client, 0x0100, 0x0100, 2);
 	mdelay(10);
 	sensor_i2c_client->i2c_func_tbl->i2c_write(sensor_i2c_client, 0x0a02, 0x0000, 2);
@@ -784,8 +719,6 @@ static uint16_t fusion_read_id_s5k3l8(struct msm_sensor_ctrl_t *s_ctrl)
 	CDBG(" s5k3l8 fusion_sensor_readreg value3 =%d\n", value3);
 	sensor_i2c_client->i2c_func_tbl->i2c_read(sensor_i2c_client, 0x0a28,  &value5, 1);
 	CDBG(" s5k3l8 fusion_sensor_readreg value5 =%d\n", value5);
-	sprintf(fusionid_back, "%d%d%d", value1, value3, value5);
-	CDBG(" s5k3l8 fusion_sensor_readreg fusionid=%s\n", fusionid_back);
 	return 0;
 }
 
@@ -810,13 +743,10 @@ static uint16_t fusion_read_id_ov5675(struct msm_sensor_ctrl_t *s_ctrl)
 
 	p = data;
 
-	memset(fusionid_front, 0, sizeof(fusionid_front));
 	for (i = 0; i < 15; i++) {
 		sensor_i2c_client->i2c_func_tbl->i2c_read(sensor_i2c_client, 0x7000+i, p+i, 1);
 		CDBG("data[%d]=%x\n", i, data[i]);
-		sprintf(fusionid_front + strlen(fusionid_front), "%u", data[i]);
 	}
-	CDBG("fusionid_front=%s\n", fusionid_front);
 	return 0;
 }
 
@@ -834,13 +764,10 @@ static uint16_t fusion_read_id_s5k5e8(struct msm_sensor_ctrl_t *s_ctrl)
 	mdelay(10);
 	p = data;
 
-	memset(fusionid_front, 0, sizeof(fusionid_front));
 	for (i = 0; i < 8; i++) {
 		sensor_i2c_client->i2c_func_tbl->i2c_read(sensor_i2c_client, 0x0a04+i, p+i, 1);
 		CDBG("data[%d]=%x\n", i, data[i]);
-		sprintf(fusionid_front + strlen(fusionid_front), "%u", data[i]);
 	}
-	CDBG("fusionid_front=%s\n", fusionid_front);
 
 	return 0;
 }
@@ -869,13 +796,10 @@ static uint16_t fusion_read_id_ov13855(struct msm_sensor_ctrl_t *s_ctrl)
 
 	p = data;
 
-	memset(fusionid_back, 0, sizeof(fusionid_back));
 	for (i = 0; i < 15; i++) {
 		sensor_i2c_client->i2c_func_tbl->i2c_read(sensor_i2c_client, 0x7000+i, p+i, 1);
 		CDBG("data[%d]=%x\n", i, data[i]);
-		sprintf(fusionid_back + strlen(fusionid_back), "%u", data[i]);
 	}
-	CDBG("fusionid_back=%s\n", fusionid_back);
 	return 0;
 }
 #endif
@@ -1102,10 +1026,6 @@ int32_t msm_sensor_driver_probe(void *setting,
 		rc = -EINVAL;
 		goto free_slave_info;
 	}
-	printk("camera sensor probe %s\n", slave_info->sensor_name);
-
-	rc = kobject_init_and_add(&kobj_back,  &ktype_back, NULL, "camera_fusion_id_back");
-	rc = kobject_init_and_add(&kobj_front,  &ktype_front, NULL, "camera_fusion_id_front");
 #endif // CONFIG_MACH_XIAOMI_SANTONI
 
 	/* Extract s_ctrl from camera id */
