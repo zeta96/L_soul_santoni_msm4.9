@@ -76,5 +76,6 @@
 	i2c@78b7000 {
 		qcom,clk-freq-out = <100000>;
 		status = "okay";
+        	qcom,disable-dma;
 	};
 };
