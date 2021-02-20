@@ -42,6 +42,7 @@
 
 void pmmLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...)
  {
+#ifdef WLAN_DEBUG
        VOS_TRACE_LEVEL  vosDebugLevel;
        char    logBuffer[LOG_SIZE];
        va_list marker;
@@ -55,4 +56,5 @@ void pmmLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...)
 
        VOS_TRACE(VOS_MODULE_ID_PMC, vosDebugLevel, "%s", logBuffer);
        va_end( marker );
+#endif
  }

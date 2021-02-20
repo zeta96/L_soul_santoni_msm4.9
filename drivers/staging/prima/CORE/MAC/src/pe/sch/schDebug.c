@@ -44,7 +44,7 @@
 
 void schLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...)
 {
-
+#ifdef WLAN_DEBUG
        VOS_TRACE_LEVEL  vosDebugLevel;
        char    logBuffer[LOG_SIZE];
        va_list marker;
@@ -57,6 +57,7 @@ void schLog(tpAniSirGlobal pMac, tANI_U32 loglevel, const char *pString, ...)
        vsnprintf(logBuffer, LOG_SIZE, pString, marker);
        VOS_TRACE(VOS_MODULE_ID_PE, vosDebugLevel, "%s", logBuffer);
        va_end( marker );
+#endif
  }
 
 
