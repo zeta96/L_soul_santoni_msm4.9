@@ -178,7 +178,6 @@ config WANT_DEV_COREDUMP
 
 config ALLOW_DEV_COREDUMP
 	bool "Allow device coredump" if EXPERT
-	default y
 	help
 	  This option controls if the device coredump mechanism is available or
 	  not; if disabled, the mechanism will be omitted even if drivers that

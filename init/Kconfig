@@ -1665,7 +1665,6 @@ config BUG
 
 config ELF_CORE
 	depends on COREDUMP
-	default y
 	bool "Enable ELF core dumps" if EXPERT
 	help
 	  Enable support for generating core dumps. Disabling saves about 4k.

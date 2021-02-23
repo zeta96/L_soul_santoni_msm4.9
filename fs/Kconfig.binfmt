@@ -53,7 +53,6 @@ config ELFCORE
 
 config CORE_DUMP_DEFAULT_ELF_HEADERS
 	bool "Write ELF core dumps with partial segments"
-	default y
 	depends on BINFMT_ELF && ELF_CORE
 	help
 	  ELF core dump files describe each memory mapping of the crashed
@@ -183,7 +182,6 @@ config BINFMT_MISC
 
 config COREDUMP
 	bool "Enable core dump support" if EXPERT
-	default y
 	help
 	  This option enables support for performing core dumps. You almost
 	  certainly want to say Y here. Not necessary on systems that never
