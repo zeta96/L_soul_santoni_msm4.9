@@ -97,7 +97,6 @@
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 14, 0))
 #include <linux/wcnss_wlan.h>
-#include <disable.h>
 #endif
 
 /* Global context for CTS handle, it is required to keep this 

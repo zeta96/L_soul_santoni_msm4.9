@@ -106,7 +106,6 @@
 #include "vos_utils.h"
 #include "sapInternal.h"
 #include "wlan_hdd_request_manager.h"
-#include <disable.h>
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
 extern void hdd_suspend_wlan(struct early_suspend *wlan_suspend);
