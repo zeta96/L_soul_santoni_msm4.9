@@ -46,9 +46,7 @@
 
 #define SMD_TTY_ERR(buf...) ((void)0)
 
-#ifdef CONFIG_IPC_LOGGING
 static void *smd_tty_log_ctx;
-#endif
 static bool smd_tty_in_suspend;
 static bool smd_tty_read_in_suspend;
 static struct wakeup_source read_in_suspend_ws;
@@ -828,12 +826,10 @@ static struct notifier_block smd_tty_pm_nb = {
  */
 static void smd_tty_log_init(void)
 {
-#ifdef CONFIG_IPC_LOGGING
 	smd_tty_log_ctx = ipc_log_context_create(SMD_TTY_LOG_PAGES,
 						"smd_tty", 0);
 	if (!smd_tty_log_ctx)
-		pr_debug("%s: Unable to create IPC log", __func__);
-#endif
+		pr_err("%s: Unable to create IPC log", __func__);
 }
 
 static struct tty_driver *smd_tty_driver;

@@ -4014,7 +4014,6 @@ static void debugfs_init(void) {}
  */
 static void *ipc_router_create_log_ctx(char *name)
 {
-#ifdef CONFIG_IPC_LOGGING
 	struct ipc_rtr_log_ctx *sub_log_ctx;
 
 	if (!IS_ENABLED(CONFIG_IPC_LOGGING))
@@ -4023,11 +4022,10 @@ static void *ipc_router_create_log_ctx(char *name)
 	sub_log_ctx = kmalloc(sizeof(*sub_log_ctx), GFP_KERNEL);
 	if (!sub_log_ctx)
 		return NULL;
-
 	sub_log_ctx->log_ctx = ipc_log_context_create(
 				IPC_RTR_INFO_PAGES, name, 0);
 	if (!sub_log_ctx->log_ctx) {
-		IPC_RTR_DBG("%s: Unable to create IPC logging for [%s]",
+		IPC_RTR_ERR("%s: Unable to create IPC logging for [%s]",
 			    __func__, name);
 		kfree(sub_log_ctx);
 		return NULL;
@@ -4036,9 +4034,6 @@ static void *ipc_router_create_log_ctx(char *name)
 	INIT_LIST_HEAD(&sub_log_ctx->list);
 	list_add_tail(&sub_log_ctx->list, &log_ctx_list);
 	return sub_log_ctx->log_ctx;
-#else
-	return NULL;
-#endif
 }
 
 static void ipc_router_log_ctx_init(void)
