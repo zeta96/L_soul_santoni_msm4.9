@@ -6924,7 +6924,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd,
 	return cpu;
 }
 
-static int available_idle_cpu(int cpu) {
+static int __maybe_unused available_idle_cpu(int cpu) {
 
 	if (!idle_cpu(cpu))
 		return 0;
