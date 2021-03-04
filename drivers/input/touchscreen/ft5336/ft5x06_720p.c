@@ -1671,7 +1671,7 @@ static void delay_qt_ms(unsigned long  w_ms)
 	}
 }
 
-static int fts_ctpm_auto_clb(void)
+static int __maybe_unused fts_ctpm_auto_clb(void)
 {
 	unsigned char uc_temp;
 	unsigned char i ;
@@ -1705,7 +1705,7 @@ static int fts_ctpm_auto_clb(void)
 }
 
 
-static int fts_ctpm_fw_upgrade_with_app_file(char *firmware_name)
+static int __maybe_unused fts_ctpm_fw_upgrade_with_app_file(char *firmware_name)
 {
 	unsigned char *pbt_buf = NULL;
 	int i_ret;
