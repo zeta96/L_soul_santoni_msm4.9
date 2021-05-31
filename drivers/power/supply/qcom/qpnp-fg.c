@@ -2238,7 +2238,7 @@ static int get_prop_capacity(struct fg_chip *chip)
 	if (chip->battery_missing)
 		return MISSING_CAPACITY;
 	if (!chip->profile_loaded && !chip->use_otp_profile) {
-		pr_info("loading batt profile, return last soc %d\n", chip->mi_last_soc);
+		pr_debug("loading batt profile, return last soc %d\n", chip->mi_last_soc);
 		return chip->mi_last_soc;
 	}
 	if (chip->charge_full)
@@ -2739,7 +2739,7 @@ static void soc_work_fn(struct work_struct *work)
 	static int prev_soc = -EINVAL;
 
 	soc = get_prop_capacity(chip);
-	pr_info("adjust_soc: s %d r %d i %d v %d t %d\n",
+	pr_debug("adjust_soc: s %d r %d i %d v %d t %d\n",
 			soc,
 			get_sram_prop_now(chip, FG_DATA_BATT_ESR),
 			get_sram_prop_now(chip, FG_DATA_CURRENT),
@@ -8942,7 +8942,7 @@ static int fg_probe(struct platform_device *pdev)
 #endif
 
 	chip->mi_last_soc = get_last_soc(chip);
-	pr_info("last soc %d\n", chip->mi_last_soc);
+	pr_debug("last soc %d\n", chip->mi_last_soc);
 
 	/* Fake temperature till the actual temperature is read */
 	chip->last_good_temp = 250;
