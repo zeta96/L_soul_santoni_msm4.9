@@ -1,52 +1,52 @@
 &CPU0 {
-		efficiency = <1024>;
+		efficiency = <1126>;
 };
 
 &CPU1 {
-		efficiency = <1024>;
+		efficiency = <1126>;
 };
 
 &CPU2 {
-		efficiency = <1024>;
+		efficiency = <1126>;
 };
 
 &CPU3 {
-		efficiency = <1024>;
+		efficiency = <1126>;
 };
 
 &CPU4 {
-		efficiency = <1019>;
+		efficiency = <1024>;
 };
 
 &CPU5 {
-		efficiency = <1019>;
+		efficiency = <1024>;
 };
 
 &CPU6 {
-		efficiency = <1019>;
+		efficiency = <1024>;
 };
 
 &CPU7 {
-		efficiency = <1019>;
+		efficiency = <1024>;
 };
 
 &energy_costs {
 	CPU_COST_0: core-cost0 {
 		busy-cost-data = <
-			  960000  144
-			 1094400  276
-			 1248000  371
-			 1344000  436
-			 1401000  259
+			  960000  231
+			 1094400  279
+			 1248000  388
+			 1344000  437
+			 1401000  465
 		>;
 	};
 
 	CPU_COST_1: core-cost1 {
 		busy-cost-data = <
-			  768000  136
-			  902400  210
-			  998400  194
-			 1094400  342
+			  768000  179
+			  902400  222
+			  998400  302
+			 1094400  354
 		>;
 	};
 
