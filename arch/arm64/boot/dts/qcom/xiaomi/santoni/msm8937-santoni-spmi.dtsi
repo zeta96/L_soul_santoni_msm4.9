@@ -46,9 +46,33 @@
 };
 
 &pmi_haptic {
-	/delete-property/ qcom,en-brake;
+	status = "okay";
 	qcom,vmax-mv = <2700>;
-	qcom,actuator-type = <1>;
+	qcom,play-rate-us = <5625>;
+	wf_0 { 
+		qcom,wf-vmax-mv = <2700>;
+		qcom,wf-play-rate-us = <5000>; 
+	};
+	wf_1 { 
+		qcom,wf-vmax-mv = <2700>; 
+		qcom,wf-play-rate-us = <5357>;
+	};
+	wf_2 { 
+		qcom,wf-vmax-mv = <2700>; 
+		qcom,wf-play-rate-us = <3000>;
+	};
+	wf_3 { 
+		qcom,wf-vmax-mv = <2700>; 
+		qcom,wf-play-rate-us = <5000>;
+	};
+	wf_4 { 
+		qcom,wf-vmax-mv = <2700>; 
+		qcom,wf-play-rate-us = <3750>;
+	};
+	wf_5 { 
+		qcom,wf-vmax-mv = <2700>; 
+		qcom,wf-play-rate-us = <5000>;
+	};
 };
 
 &qpnp_smbcharger {
