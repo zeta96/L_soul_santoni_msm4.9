@@ -48,30 +48,36 @@
 &pmi_haptic {
 	status = "okay";
 	qcom,vmax-mv = <2700>;
-	qcom,play-rate-us = <5625>;
-	wf_0 { 
-		qcom,wf-vmax-mv = <2700>;
-		qcom,wf-play-rate-us = <5000>; 
+	qcom,play-rate-us = <6667>;
+	wf_0 {
+		qcom,wf-vmax-mv = <2900>;
+		qcom,wf-pattern = [7e 3e 3e 3e];
+		qcom,wf-play-rate-us = <6667>;
 	};
-	wf_1 { 
-		qcom,wf-vmax-mv = <2700>; 
-		qcom,wf-play-rate-us = <5357>;
+	wf_1 {
+		qcom,wf-vmax-mv = <2900>;
+		qcom,wf-pattern = [7e 7e 7e 02 02 02 02 02 02];
+		qcom,wf-play-rate-us = <7143>;
 	};
-	wf_2 { 
-		qcom,wf-vmax-mv = <2700>; 
-		qcom,wf-play-rate-us = <3000>;
+	wf_2 {
+		qcom,wf-vmax-mv = <2900>;
+		qcom,wf-pattern = [7e 7e 7e];
+		qcom,wf-play-rate-us = <4000>;
 	};
-	wf_3 { 
-		qcom,wf-vmax-mv = <2700>; 
+	wf_3 {
+		qcom,wf-vmax-mv = <2900>;
+		qcom,wf-pattern = [7e 7e 7e 7e];
+		qcom,wf-play-rate-us = <6667>;
+	};
+	wf_4 {
+		qcom,wf-vmax-mv = <2900>;
+		qcom,wf-pattern = [7e 7e 7e];
 		qcom,wf-play-rate-us = <5000>;
 	};
-	wf_4 { 
-		qcom,wf-vmax-mv = <2700>; 
-		qcom,wf-play-rate-us = <3750>;
-	};
-	wf_5 { 
-		qcom,wf-vmax-mv = <2700>; 
-		qcom,wf-play-rate-us = <5000>;
+	wf_5 {
+		qcom,wf-vmax-mv = <2900>;
+		qcom,wf-pattern = [7e 7e 7e 7e];
+		qcom,wf-play-rate-us = <6667>;
 	};
 };
 
