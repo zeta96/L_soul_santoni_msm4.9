@@ -228,6 +228,16 @@ static int wf_repeat[8] = {1, 2, 4, 8, 16, 32, 64, 128};
 static int wf_s_repeat[4] = {1, 2, 4, 8};
 const static char * const wf_src_str[] = {"vmax", "buffer", "audio", "pwm"};
 
+/*
+ * adjustable vmax_mv for userspace
+ * level: writable vmax_mv
+ * level_max: indicator for the maximum allowed vmax_mv
+ */
+static int vmax_mv_user;
+static int vmax_mv_user_max = HAP_VMAX_MV_MAX;
+module_param_named(level, vmax_mv_user, int, 0600);
+module_param_named(level_max, vmax_mv_user_max, int, 0400);
+
 static inline bool is_secure(u8 addr)
 {
 	return ((addr & 0xFF) > 0xD0);
@@ -481,7 +491,16 @@ static int qti_haptics_config_vmax(struct qti_hap_chip *chip, int vmax_mv)
 
 	addr = REG_HAP_VMAX_CFG;
 	mask = HAP_VMAX_MV_MASK;
-	val = (vmax_mv / HAP_VMAX_MV_LSB) << HAP_VMAX_MV_SHIFT;
+
+	/*
+	 * apply vmax_mv_user within specified range
+	 * will revert back to default on zero value
+	 */
+	if (vmax_mv_user > 0 && vmax_mv_user < HAP_VMAX_MV_MAX) {
+		val = (vmax_mv_user / HAP_VMAX_MV_LSB) << HAP_VMAX_MV_SHIFT;
+	} else {
+		val = (vmax_mv / HAP_VMAX_MV_LSB) << HAP_VMAX_MV_SHIFT;
+	}
 	rc = qti_haptics_masked_write(chip, addr, mask, val);
 	if (rc < 0)
 		dev_err(chip->dev, "write VMAX_CFG failed, rc=%d\n",
@@ -1357,6 +1376,11 @@ static int qti_haptics_parse_dt_per_effect(struct qti_hap_chip *chip)
 				chip->predefined[j].wf_repeat_n);
 		dev_dbg(chip->dev, "    wf_s_repeat_n: %d\n",
 				chip->predefined[j].wf_s_repeat_n);
+	}
+
+	// fill exposed vmax_mv with default value
+	if (vmax_mv_user < 1) {
+		vmax_mv_user = config->vmax_mv;
 	}
 
 	return 0;
