@@ -80,6 +80,3 @@ obj-$(CONFIG_IPC_LOGGING) += ipc_logging_debug.o
 endif
 libftrace-y := ftrace.o
 
-ifeq ($(CONFIG_ANDROID),y)
-CFLAGS_trace.o += -DCONFIG_DEBUG_FS
-endif
