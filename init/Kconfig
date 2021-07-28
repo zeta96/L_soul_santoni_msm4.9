@@ -2097,7 +2097,7 @@ config SLAB_FREELIST_RANDOM
 	  allocator against heap overflows.
 
 config SLUB_CPU_PARTIAL
-	default y
+	default n
 	depends on SLUB && SMP
 	bool "SLUB per cpu partial cache"
 	help
