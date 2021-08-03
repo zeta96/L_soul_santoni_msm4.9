@@ -193,6 +193,12 @@ struct schedtune {
 	bool sched_boost_enabled;
 
 	/*
+	 * This tracks the default value of sched_boost_enabled and is used
+	 * restore the value following any temporary changes to that flag.
+	 */
+	bool sched_boost_enabled_backup;
+
+	/*
 	 * Controls whether tasks of this cgroup should be colocated with each
 	 * other and tasks of other cgroups that have the same flag turned on.
 	 */
@@ -243,6 +249,7 @@ root_schedtune = {
 #ifdef CONFIG_SCHED_WALT
 	.sched_boost_no_override = false,
 	.sched_boost_enabled = true,
+	.sched_boost_enabled_backup = true,
 	.colocate = false,
 	.colocate_update_disabled = false,
 #endif
@@ -293,7 +300,7 @@ schedtune_accept_deltas(int nrg_delta, int cap_delta,
  *    implementation especially for the computation of the per-CPU boost
  *    value
  */
-#define BOOSTGROUPS_COUNT 6
+#define BOOSTGROUPS_COUNT 5
 
 /* Array of configured boostgroups */
 static struct schedtune *allocated_group[BOOSTGROUPS_COUNT] = {
@@ -332,6 +339,7 @@ static inline void init_sched_boost(struct schedtune *st)
 {
 	st->sched_boost_no_override = false;
 	st->sched_boost_enabled = true;
+	st->sched_boost_enabled_backup = st->sched_boost_enabled;
 	st->colocate = false;
 	st->colocate_update_disabled = false;
 }
@@ -359,7 +367,8 @@ void restore_cgroup_boost_settings(void)
 		if (!allocated_group[i])
 			break;
 
-		allocated_group[i]->sched_boost_enabled = true;
+		allocated_group[i]->sched_boost_enabled =
+			allocated_group[i]->sched_boost_enabled_backup;
 	}
 }
 
@@ -604,6 +613,25 @@ int schedtune_can_attach(struct cgroup_taskset *tset)
 }
 
 #ifdef CONFIG_SCHED_WALT
+static u64 sched_boost_enabled_read(struct cgroup_subsys_state *css,
+			struct cftype *cft)
+{
+	struct schedtune *st = css_st(css);
+
+	return st->sched_boost_enabled;
+}
+
+static int sched_boost_enabled_write(struct cgroup_subsys_state *css,
+			struct cftype *cft, u64 enable)
+{
+	struct schedtune *st = css_st(css);
+
+	st->sched_boost_enabled = !!enable;
+	st->sched_boost_enabled_backup = st->sched_boost_enabled;
+
+	return 0;
+}
+
 static u64 sched_colocate_read(struct cgroup_subsys_state *css,
 			struct cftype *cft)
 {
@@ -854,6 +882,11 @@ static struct cftype files[] = {
 		.name = "sched_boost_no_override",
 		.read_u64 = sched_boost_override_read,
 		.write_u64 = sched_boost_override_write,
+	},
+	{
+		.name = "sched_boost_enabled",
+		.read_u64 = sched_boost_enabled_read,
+		.write_u64 = sched_boost_enabled_write,
 	},
 	{
 		.name = "colocate",

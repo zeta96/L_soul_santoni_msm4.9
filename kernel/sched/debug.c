@@ -551,7 +551,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 			SPLIT_NS(cfs_rq->exec_clock));
 
 	raw_spin_lock_irqsave(&rq->lock, flags);
-	if (rb_first_cached(&cfs_rq->tasks_timeline))
+	if (cfs_rq->rb_leftmost)
 		MIN_vruntime = (__pick_first_entity(cfs_rq))->vruntime;
 	last = __pick_last_entity(cfs_rq);
 	if (last)
@@ -703,7 +703,7 @@ do {									\
 	P(walt_stats.nr_big_tasks);
 #endif
 	SEQ_printf(m, "  .%-30s: %llu\n", "walt_stats.cumulative_runnable_avg",
-			rq->walt_stats.cumulative_runnable_avg_scaled);
+			rq->walt_stats.cumulative_runnable_avg);
 #endif
 #undef P
 #undef PN
@@ -1017,6 +1017,7 @@ void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 		P_SCHEDSTAT(se.statistics.nr_wakeups_sis_count);
 		/* select_energy_cpu_brute() */
 		P_SCHEDSTAT(se.statistics.nr_wakeups_secb_attempts);
+		P_SCHEDSTAT(se.statistics.nr_wakeups_secb_sync);
 		P_SCHEDSTAT(se.statistics.nr_wakeups_secb_idle_bt);
 		P_SCHEDSTAT(se.statistics.nr_wakeups_secb_insuff_cap);
 		P_SCHEDSTAT(se.statistics.nr_wakeups_secb_no_nrg_sav);
