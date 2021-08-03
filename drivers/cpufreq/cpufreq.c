@@ -17,7 +17,6 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
-#include <linux/binfmts.h>
 #include <linux/cpu.h>
 #include <linux/cpufreq.h>
 #include <linux/cpufreq_times.h>
@@ -31,7 +30,6 @@
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 #include <linux/tick.h>
-#include <linux/binfmts.h>
 #ifdef CONFIG_SMP
 #include <linux/sched.h>
 #endif
@@ -715,25 +713,8 @@ static int cpufreq_parse_governor(char *str_governor, unsigned int *policy,
 			ret = request_module("cpufreq_%s", str_governor);
 			mutex_lock(&cpufreq_governor_mutex);
 
-			/*
-			 * At this point, if the governor was found via module
-			 * search, it will load it. However, if it didn't, we
-			 * are just going to exit without doing anything to
-			 * the governor. Most of the time, this is totally
-			 * fine; the one scenario where it's not is when a ROM
-			 * has a boot script that requests a governor that
-			 * exists in the default kernel but not in this one.
-			 * This kernel (and nearly every other Android kernel)
-			 * has the performance governor as default for boot
-			 * performance which is then changed to another,
-			 * usually schedutil. So, instead of just exiting if
-			 * the requested governor wasn't found, let's try
-			 * falling back to schedutil before falling out.
-			 */
 			if (ret == 0)
 				t = find_governor(str_governor);
-			else
-				t = find_governor("schedutil");
 		}
 
 		if (t != NULL) {
@@ -795,10 +776,6 @@ static ssize_t store_##file_name					\
 	new_policy.min = policy->user_policy.min;			\
 	new_policy.max = policy->user_policy.max;			\
 									\
-	if (&policy->object == &policy->min &&				\
-	    task_is_booster(current))					\
-		return count;						\
-									\
 	new_policy.min = new_policy.user_policy.min;			\
 	new_policy.max = new_policy.user_policy.max;			\
 									\
@@ -836,9 +813,7 @@ static ssize_t show_cpuinfo_cur_freq(struct cpufreq_policy *policy,
  */
 static ssize_t show_scaling_governor(struct cpufreq_policy *policy, char *buf)
 {
-	if (task_is_booster(current))
-		return sprintf(buf, "schedutil\n");
-	else if (policy->policy == CPUFREQ_POLICY_POWERSAVE)
+	if (policy->policy == CPUFREQ_POLICY_POWERSAVE)
 		return sprintf(buf, "powersave\n");
 	else if (policy->policy == CPUFREQ_POLICY_PERFORMANCE)
 		return sprintf(buf, "performance\n");
@@ -1985,10 +1960,9 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
  * twice in parallel for the same policy and that it will never be called in
  * parallel with either ->target() or ->target_index() for the same policy.
  *
- * Returns the actual frequency set for the CPU.
- *
- * If 0 is returned by the driver's ->fast_switch() callback to indicate an
- * error condition, the hardware configuration must be preserved.
+ * If CPUFREQ_ENTRY_INVALID is returned by the driver's ->fast_switch()
+ * callback to indicate an error condition, the hardware configuration must be
+ * preserved.
  */
 unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
 					unsigned int target_freq)

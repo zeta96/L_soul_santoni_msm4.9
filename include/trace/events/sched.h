@@ -573,7 +573,7 @@ DECLARE_EVENT_CLASS(sched_cpu_load,
 		__entry->nr_big_tasks		= rq->walt_stats.nr_big_tasks;
 		__entry->load_scale_factor	= cpu_load_scale_factor(rq->cpu);
 		__entry->capacity		= cpu_capacity(rq->cpu);
-		__entry->cumulative_runnable_avg = rq->walt_stats.cumulative_runnable_avg_scaled;
+		__entry->cumulative_runnable_avg = rq->walt_stats.cumulative_runnable_avg;
 		__entry->irqload		= irqload;
 		__entry->max_freq		= cpu_max_freq(rq->cpu);
 		__entry->power_cost		= power_cost;
@@ -635,7 +635,7 @@ TRACE_EVENT(sched_load_to_gov,
 		__entry->grp_rq_ps	= rq->grp_time.prev_runnable_sum;
 		__entry->nt_ps		= rq->nt_prev_runnable_sum;
 		__entry->grp_nt_ps	= rq->grp_time.nt_prev_runnable_sum;
-		__entry->pl		= rq->walt_stats.pred_demands_sum_scaled;
+		__entry->pl		= rq->walt_stats.pred_demands_sum;
 		__entry->load		= load;
 		__entry->big_task_rotation = big_task_rotation;
 		__entry->sysctl_sched_little_cluster_coloc_fmin_khz =
@@ -735,10 +735,10 @@ TRACE_EVENT(sched_energy_diff,
 TRACE_EVENT(sched_task_util,
 
 	TP_PROTO(struct task_struct *p, int next_cpu, int backup_cpu,
-		 int target_cpu, bool need_idle, int fastpath,
+		 int target_cpu, bool sync, bool need_idle, int fastpath,
 		 bool placement_boost, int rtg_cpu, u64 start_t),
 
-	TP_ARGS(p, next_cpu, backup_cpu, target_cpu, need_idle, fastpath,
+	TP_ARGS(p, next_cpu, backup_cpu, target_cpu, sync, need_idle, fastpath,
 		placement_boost, rtg_cpu, start_t),
 
 	TP_STRUCT__entry(
@@ -749,6 +749,7 @@ TRACE_EVENT(sched_task_util,
 		__field(int, next_cpu			)
 		__field(int, backup_cpu			)
 		__field(int, target_cpu			)
+		__field(bool, sync			)
 		__field(bool, need_idle			)
 		__field(int, fastpath			)
 		__field(bool, placement_boost		)
@@ -764,6 +765,7 @@ TRACE_EVENT(sched_task_util,
 		__entry->next_cpu		= next_cpu;
 		__entry->backup_cpu		= backup_cpu;
 		__entry->target_cpu		= target_cpu;
+		__entry->sync			= sync;
 		__entry->need_idle		= need_idle;
 		__entry->fastpath		= fastpath;
 		__entry->placement_boost	= placement_boost;
@@ -771,8 +773,8 @@ TRACE_EVENT(sched_task_util,
 		__entry->latency		= (sched_clock() - start_t);
 	),
 
-	TP_printk("pid=%d comm=%s util=%lu prev_cpu=%d next_cpu=%d backup_cpu=%d target_cpu=%d need_idle=%d fastpath=%d placement_boost=%d rtg_cpu=%d latency=%llu",
-		__entry->pid, __entry->comm, __entry->util, __entry->prev_cpu, __entry->next_cpu, __entry->backup_cpu, __entry->target_cpu, __entry->need_idle,  __entry->fastpath, __entry->placement_boost, __entry->rtg_cpu, __entry->latency)
+	TP_printk("pid=%d comm=%s util=%lu prev_cpu=%d next_cpu=%d backup_cpu=%d target_cpu=%d sync=%d need_idle=%d fastpath=%d placement_boost=%d rtg_cpu=%d latency=%llu",
+		__entry->pid, __entry->comm, __entry->util, __entry->prev_cpu, __entry->next_cpu, __entry->backup_cpu, __entry->target_cpu, __entry->sync, __entry->need_idle,  __entry->fastpath, __entry->placement_boost, __entry->rtg_cpu, __entry->latency)
 );
 
 #endif
@@ -1416,7 +1418,7 @@ TRACE_EVENT(sched_contrib_scale_f,
 extern unsigned int sysctl_sched_use_walt_cpu_util;
 extern unsigned int sysctl_sched_use_walt_task_util;
 extern unsigned int sched_ravg_window;
-extern bool walt_disabled;
+extern unsigned int walt_disabled;
 #endif
 
 /*

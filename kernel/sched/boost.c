@@ -14,7 +14,6 @@
 #include <linux/of.h>
 #include <linux/sched/core_ctl.h>
 #include <trace/events/sched.h>
-#include <linux/binfmts.h>
 
 /*
  * Scheduler boost is a mechanism to temporarily place tasks on CPUs
@@ -41,7 +40,6 @@ static void boost_kick_cpus(void)
 {
 	int i;
 	struct cpumask kick_mask;
-	u32 nr_running;
 
 	if (boost_policy != SCHED_BOOST_ON_BIG)
 		return;
@@ -49,20 +47,8 @@ static void boost_kick_cpus(void)
 	cpumask_andnot(&kick_mask, cpu_online_mask, cpu_isolated_mask);
 
 	for_each_cpu(i, &kick_mask) {
-		/*
-		 * kick only "small" cluster
-		 */
-		if (cpu_capacity(i) != max_capacity) {
-			nr_running = ACCESS_ONCE(cpu_rq(i)->nr_running);
-
-			/*
-			 * make sense to interrupt CPU if its run-queue
-			 * has something running in order to check for
-			 * migration afterwards, otherwise skip it.
-			 */
-			if (nr_running)
-				boost_kick(i);
-		}
+		if (cpu_capacity(i) != max_capacity)
+			boost_kick(i);
 	}
 }
 
@@ -204,9 +190,6 @@ int sched_boost_handler(struct ctl_table *table, int write,
 	int ret;
 	unsigned int *data = (unsigned int *)table->data;
 	unsigned int old_val;
-
-	if (task_is_booster(current))
-		return 0;
 
 	mutex_lock(&boost_mutex);
 
