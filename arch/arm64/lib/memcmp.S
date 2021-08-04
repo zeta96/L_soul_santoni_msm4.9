@@ -57,7 +57,7 @@
    accesses.  */
 
 .p2align 6
-WEAK(memcmp)
+ENTRY(memcmp)
 	subs	limit, limit, 8
 	b.lo	.Lless8
 
