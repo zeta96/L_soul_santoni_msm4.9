@@ -868,6 +868,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
 KBUILD_CFLAGS += $(call cc-option, -mno-global-merge,)
 KBUILD_CFLAGS += $(call cc-option, -fcatch-undefined-behavior)
 KBUILD_CFLAGS += $(call cc-option, -mllvm -polly) \
+		 $(call cc-option, -mllvm -polly-run-dce) \
 		 $(call cc-option, -mllvm -polly-ast-use-context) \
 		 $(call cc-option, -mllvm -polly-invariant-load-hoisting) \
 		 $(call cc-option, -mllvm -polly-opt-fusion=max) \
