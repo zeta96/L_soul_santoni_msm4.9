@@ -714,7 +714,9 @@ export LDFINAL
 endif
 
 ifdef CONFIG_GCC_GRAPHITE
-KBUILD_CFLAGS	+= -fgraphite-identity -floop-nest-optimize
+  ifeq ($(cc-name),gcc)
+    KBUILD_CFLAGS	+= -fgraphite-identity -floop-nest-optimize
+  endif
 endif
 
 # The arch Makefile can set ARCH_{CPP,A,C}FLAGS to override the default
