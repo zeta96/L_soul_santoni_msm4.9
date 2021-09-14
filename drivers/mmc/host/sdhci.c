@@ -256,7 +256,7 @@ retry_reset:
 				}
 			}
 
-			sdhci_dumpregs(host);
+			//sdhci_dumpregs(host);
 			return;
 		}
 		timeout--;
@@ -1218,7 +1218,7 @@ void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 		if (timeout == 0) {
 			pr_err("%s: Controller never released inhibit bit(s).\n",
 			       mmc_hostname(host->mmc));
-			sdhci_dumpregs(host);
+			//sdhci_dumpregs(host);
 			cmd->error = -EIO;
 			sdhci_finish_mrq(host, cmd->mrq);
 			return;
@@ -1495,7 +1495,7 @@ void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
 		if (timeout == 0) {
 			pr_err("%s: Internal clock never stabilised.\n",
 			       mmc_hostname(host->mmc));
-			sdhci_dumpregs(host);
+			//sdhci_dumpregs(host);
 			return;
 		}
 		timeout--;
@@ -2886,7 +2886,7 @@ static void sdhci_timeout_timer(unsigned long data)
 		host->mmc->err_stats[MMC_ERR_REQ_TIMEOUT]++;
 		pr_err("%s: Timeout waiting for hardware cmd interrupt.\n",
 		       mmc_hostname(host->mmc));
-		sdhci_dumpregs(host);
+		//sdhci_dumpregs(host);
 
 		host->cmd->error = -ETIMEDOUT;
 		sdhci_finish_mrq(host, host->cmd->mrq);
@@ -2910,7 +2910,7 @@ static void sdhci_timeout_data_timer(unsigned long data)
 		host->mmc->err_stats[MMC_ERR_REQ_TIMEOUT]++;
 		pr_err("%s: Timeout waiting for hardware interrupt.\n",
 		       mmc_hostname(host->mmc));
-		sdhci_dumpregs(host);
+		//sdhci_dumpregs(host);
 
 		if (host->data) {
 			pr_info("%s: bytes to transfer: %d transferred: %d\n",
@@ -2952,7 +2952,7 @@ static void sdhci_cmd_irq(struct sdhci_host *host, u32 intmask, u32 *intmask_p)
 			return;
 		pr_err("%s: Got command interrupt 0x%08x even though no command operation was in progress.\n",
 		       mmc_hostname(host->mmc), (unsigned)intmask);
-		sdhci_dumpregs(host);
+		//sdhci_dumpregs(host);
 		return;
 	}
 
@@ -3011,7 +3011,7 @@ static void sdhci_adma_show_error(struct sdhci_host *host)
 	const char *name = mmc_hostname(host->mmc);
 	void *desc = host->adma_table;
 
-	sdhci_dumpregs(host);
+	//sdhci_dumpregs(host);
 
 	while (true) {
 		struct sdhci_adma2_64_desc *dma_desc = desc;
@@ -3104,7 +3104,7 @@ static void sdhci_data_irq(struct sdhci_host *host, u32 intmask)
 
 		pr_err("%s: Got data interrupt 0x%08x even though no data operation was in progress.\n",
 		       mmc_hostname(host->mmc), (unsigned)intmask);
-		sdhci_dumpregs(host);
+		//sdhci_dumpregs(host);
 
 		return;
 	}
@@ -3145,9 +3145,9 @@ static void sdhci_data_irq(struct sdhci_host *host, u32 intmask)
 			       host->data->error, ktime_to_ms(ktime_sub(
 			       ktime_get(), host->data_start_time)));
 
-			if (!host->mmc->sdr104_wa ||
-			    (host->mmc->ios.timing != MMC_TIMING_UHS_SDR104))
-				sdhci_dumpregs(host);
+			//if (!host->mmc->sdr104_wa ||
+			    //(host->mmc->ios.timing != MMC_TIMING_UHS_SDR104))
+				//sdhci_dumpregs(host);
 		}
 		sdhci_finish_data(host);
 	} else {
@@ -3406,7 +3406,7 @@ out:
 	if (unexpected) {
 		pr_err("%s: Unexpected interrupt 0x%08x.\n",
 			   mmc_hostname(host->mmc), unexpected);
-		sdhci_dumpregs(host);
+		//sdhci_dumpregs(host);
 	}
 
 	return result;
@@ -3713,7 +3713,7 @@ static void sdhci_cmdq_dump_vendor_regs(struct mmc_host *mmc)
 {
 	struct sdhci_host *host = mmc_priv(mmc);
 
-	sdhci_dumpregs(host);
+	//sdhci_dumpregs(host);
 }
 
 static int sdhci_cmdq_init(struct sdhci_host *host, struct mmc_host *mmc,
@@ -4511,7 +4511,7 @@ int __sdhci_add_host(struct sdhci_host *host)
 	}
 
 #ifdef CONFIG_MMC_DEBUG
-	sdhci_dumpregs(host);
+	//sdhci_dumpregs(host);
 #endif
 
 	if (!(host->quirks2 & SDHCI_QUIRK2_BROKEN_LED_CONTROL)) {
