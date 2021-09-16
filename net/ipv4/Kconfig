@@ -665,6 +665,17 @@ config TCP_CONG_BBRPLUS
         Originally introduced by dog250 & cx9208.
         Same as BBR, it requires the fq ("Fair Queue") pacing packet scheduler.
 
+config TCP_CONG_AGILESD
+    tristate "Agile-SD Congestion control"
+    default y
+    ---help---
+  
+    This is version 1.0 of Agile-SD TCP. It is a sender-side only. 
+    It contributes the Agility Factor (AF) to shorten the epoch time 
+    and to make TCP independent from RTT. AF reduces the sensitivity 
+    to packet losses, which in turn Agile-SD to achieve better throughput 
+    over high-speed networks.
+
 choice
 	prompt "Default TCP congestion control"
 	default DEFAULT_BBRPLUS
@@ -705,6 +716,9 @@ choice
         config DEFAULT_BBRPLUS
                 bool "BBRPLUS" if TCP_CONG_BBRPLUS=y
 
+	config DEFAULT_AGILESD
+		bool "AGILESD" if TCP_CONG_AGILESD=y
+
 	config DEFAULT_RENO
 		bool "Reno"
 endchoice
@@ -718,6 +732,7 @@ config TCP_CONG_CUBIC
 
 config DEFAULT_TCP_CONG
 	string
+        default "agilesd" if DEFAULT_AGILESD
 	default "bic" if DEFAULT_BIC
 	default "cubic" if DEFAULT_CUBIC
 	default "htcp" if DEFAULT_HTCP
