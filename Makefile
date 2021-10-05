@@ -787,17 +787,6 @@ ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS   += -Os
 else
 KBUILD_CFLAGS   += -O2
-ifeq ($(cc-name),clang)
-KBUILD_CFLAGS   += -O3
-KBUILD_CFLAGS	+= -mcpu=cortex-a53 -mtune=cortex-a53
-# Assembler doesn't like big.LITTLE / DynamIQ setup so we optimize assembly codes for LITTLE CPU
-MACH_AFLAGS := $(call as-option, -Wa$(comma)-mcpu=cortex-a53)
-# Append result to CFLAGS and AFLAGS
-KBUILD_CFLAGS += $(strip $(MACH_CFLAGS) $(MACH_AFLAGS))
-KBUILD_AFLAGS += $(strip $(MACH_AFLAGS))
-# Export to be picked up by drivers that need them
-export MACH_CFLAGS MACH_AFLAGS
-endif
 endif
 
 # Tell gcc to never replace conditional load with a non-conditional one
