@@ -873,23 +873,11 @@ KBUILD_CFLAGS += $(call cc-option, -mllvm -polly) \
 		 $(call cc-option, -mllvm -polly-opt-fusion=max) \
 		 $(call cc-option, -mllvm -polly-run-inliner) \
 		 $(call cc-option, -mllvm -polly-vectorizer=stripmine)
-ifdef CONFIG_INLINE_OPTIMIZATION
-KBUILD_CFLAGS	+= -mllvm -inline-threshold=600
-KBUILD_CFLAGS	+= -mllvm -inlinehint-threshold=750
-endif
 else
 
 # These warnings generated too much noise in a regular build.
 # Use make W=1 to enable them (see scripts/Makefile.extrawarn)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
-ifdef CONFIG_INLINE_OPTIMIZATION
-KBUILD_CFLAGS	+= --param max-inline-insns-single=600
-KBUILD_CFLAGS	+= --param max-inline-insns-auto=750
-# We limit inlining to 5KB on the stack.
-KBUILD_CFLAGS	+= --param large-stack-frame=12288
-KBUILD_CFLAGS	+= --param inline-min-speedup=5
-KBUILD_CFLAGS	+= --param inline-unit-growth=60
-endif
 endif
 
 ifeq ($(ld-name),lld)
