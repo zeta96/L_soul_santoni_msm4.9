@@ -164,8 +164,8 @@ static long amrwb_in_ioctl(struct file *file,
 			pr_err("%s: copy_to_user for AUDIO_GET_AMRWB_ENC_CONFIG failed\n",
 				__func__);
 			rc = -EFAULT;
-		break;
                 } 
+		break;
 	}
 	case AUDIO_SET_AMRWB_ENC_CONFIG: {
 		struct msm_audio_amrwb_enc_config cfg;
