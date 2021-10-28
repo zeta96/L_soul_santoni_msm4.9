@@ -964,6 +964,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
 
 # disable address warning by default
 KBUILD_CFLAGS   += $(call disable-warning, address)
+KBUILD_CFLAGS   += $(call disable-warning, array-compare)
 
 # We'll want to enable this eventually, but it's not going away for 5.7 at least
 KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
