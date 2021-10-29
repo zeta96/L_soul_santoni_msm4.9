@@ -378,16 +378,18 @@ static long gf_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 	case GF_IOC_POWER_ON:
 		if (gf_dev->device_available == 1)
 			pr_info("Sensor has already powered-on.\n");
-		else
+		else {
 			gf_power_on(gf_dev);
 			gf_dev->device_available = 1;
+		}
 		break;
 	case GF_IOC_POWER_OFF:
 		if (gf_dev->device_available == 0)
 			pr_info("Sensor has already powered-off.\n");
-		else
+		else {
 			gf_power_off(gf_dev);
 			gf_dev->device_available = 0;
+		}
 		break;
 		default:
 		gf_dbg("Unsupport cmd:0x%x\n", cmd);
@@ -773,9 +775,10 @@ static int gf_remove(struct platform_device *pdev)
 	if (gf_dev->irq)
 		free_irq(gf_dev->irq, gf_dev);
 
-	if (gf_dev->input != NULL)
+	if (gf_dev->input != NULL) {
 		input_unregister_device(gf_dev->input);
 		input_free_device(gf_dev->input);
+	}
 
 
 	mutex_lock(&device_list_lock);
