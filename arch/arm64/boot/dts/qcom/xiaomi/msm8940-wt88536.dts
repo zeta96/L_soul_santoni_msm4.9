@@ -40,7 +40,3 @@
 		#include "santoni/batterydata-qrd-Default-4v4-4100mah.dtsi"
 	};
 };
-
-&apps_iommu {
-	qcom,no-aarch64;
-};
