@@ -697,8 +697,7 @@ export LLVM_AR LLVM_DIS
 endif
 
 ifdef CONFIG_LTO_GCC
-LTO_CFLAGS	:= -flto -flto=auto -fipa-pta -fno-fat-lto-objects \
-		   -fuse-linker-plugin -fwhole-program
+LTO_CFLAGS	:= -flto=auto -fipa-pta
 KBUILD_CFLAGS	+= $(LTO_CFLAGS)
 LTO_LDFLAGS	:= $(LTO_CFLAGS) -Wno-lto-type-mismatch -Wno-psabi \
 		   -Wno-stringop-overflow -Wno-stringop-overread -flinker-output=nolto-rel \
