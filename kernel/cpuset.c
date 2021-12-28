@@ -2030,6 +2030,7 @@ static void uclamp_set(struct kernfs_open_file *of,
 	const char *cs_name = cs->css.cgroup->kn->name;
 
 	static struct ucl_param tgts[] = {
+		{"audio-app",             "0", "50", 0, 0},
 		{"top-app",		"35", "100", 1, 1},
 		{"foreground",		"20",  "60", 1, 1},
  		{"restricted", 	    	"10", "40",  0, 0},
