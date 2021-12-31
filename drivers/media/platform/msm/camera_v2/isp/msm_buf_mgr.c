@@ -1386,7 +1386,7 @@ static int msm_isp_buf_mgr_debug(struct msm_isp_buf_mgr *buf_mgr,
 	struct msm_isp_bufq *bufq = NULL;
 
 	if (!buf_mgr) {
-		pr_debug_ratelimited("%s: %d] NULL buf_mgr\n",
+		pr_err_ratelimited("%s: %d] NULL buf_mgr\n",
 			__func__, __LINE__);
 		return -EINVAL;
 	}
@@ -1432,25 +1432,25 @@ static int msm_isp_buf_mgr_debug(struct msm_isp_buf_mgr *buf_mgr,
 		spin_unlock_irqrestore(&bufq->bufq_lock, flags);
 	}
 
-	pr_debug("%s: ==== SMMU page fault addr %lx ====\n", __func__,
+	pr_err("%s: ==== SMMU page fault addr %lx ====\n", __func__,
 		fault_addr);
-	pr_debug("%s: nearby stream id %x, frame_id %d\n", __func__,
+	pr_err("%s: nearby stream id %x, frame_id %d\n", __func__,
 		debug_stream_id, debug_frame_id);
-	pr_debug("%s: nearby buf index %d, plane %d, state %d\n", __func__,
+	pr_err("%s: nearby buf index %d, plane %d, state %d\n", __func__,
 		debug_buf_idx, debug_buf_plane, debug_state);
-	pr_debug("%s: buf address %pK -- %pK\n", __func__,
+	pr_err("%s: buf address %pK -- %pK\n", __func__,
 		(void *)debug_start_addr, (void *)debug_end_addr);
 
 	if (BUF_DEBUG_FULL) {
 		print_buf = kzalloc(print_buf_size, GFP_ATOMIC);
 		if (!print_buf) {
-			pr_debug("%s failed: No memory", __func__);
+			pr_err("%s failed: No memory", __func__);
 			return -ENOMEM;
 		}
 		snprintf(print_buf, print_buf_size, "%s\n", __func__);
 		for (i = 0; i < BUF_MGR_NUM_BUF_Q; i++) {
 			if (i % 2 == 0 && i > 0) {
-				pr_debug("%s\n", print_buf);
+				pr_err("%s\n", print_buf);
 				print_buf[0] = 0;
 			}
 			if (buf_mgr->bufq[i].bufq_handle != 0) {
@@ -1486,7 +1486,7 @@ static int msm_isp_buf_mgr_debug(struct msm_isp_buf_mgr *buf_mgr,
 				end_addr = 0;
 			}
 		}
-		pr_debug("%s\n", print_buf);
+		pr_err("%s\n", print_buf);
 		kfree(print_buf);
 	}
 	return rc;
