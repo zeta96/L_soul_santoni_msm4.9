@@ -5085,7 +5085,11 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 #ifdef CONFIG_SMP
 	int task_new = flags & ENQUEUE_WAKEUP_NEW;
 #endif
+#ifdef CONFIG_CGROUP_SCHEDTUNE
 	bool prefer_iowait = schedtune_prefer_iowait(p) > 0;
+#elif  CONFIG_UCLAMP_TASK
+	bool prefer_idle = uclamp_latency_sensitive(p) > 0;
+#endif
 
 #ifdef CONFIG_SCHED_WALT
 	p->misfit = !task_fits_max(p, rq->cpu);
@@ -5123,7 +5127,11 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
 	 * utilization updates, so do it here explicitly with the IOWAIT flag
 	 * passed.
 	 */
+#ifdef CONFIG_CGROUP_SCHEDTUNE
 	if (p->in_iowait && prefer_iowait)
+#elif  CONFIG_UCLAMP_TASK
+	if (p->in_iowait && prefer_idle)
+#endif
 		cpufreq_update_this_cpu(rq, SCHED_CPUFREQ_IOWAIT);
 
 	for_each_sched_entity(se) {
@@ -6459,7 +6467,11 @@ static inline bool task_fits_max(struct task_struct *p, int cpu)
 		return true;
 
 	if ((task_boost_policy(p) == SCHED_BOOST_ON_BIG ||
+#ifdef CONFIG_CGROUP_SCHEDTUNE
 			schedtune_task_boost(p) > 0) &&
+#elif CONFIG_UCLAMP_TASK
+			uclamp_boosted(p) > 0) &&
+#endif
 			is_min_capacity_cpu(cpu))
 		return false;
 
@@ -7690,7 +7702,12 @@ cpu_is_in_target_set(struct task_struct *p, int cpu)
 	int first_cpu = rd->max_cap_orig_cpu;
 	int next_usable_cpu;
 
-	if (sysctl_sched_is_big_little && !schedtune_task_boost(p))
+	if (sysctl_sched_is_big_little &&
+#ifdef CONFIG_SCHED_TUNE
+		!schedtune_task_boost(p))
+#elif  CONFIG_UCLAMP_TASK
+		!uclamp_boosted(p))
+#endif
 		first_cpu = rd->min_cap_orig_cpu;
 
 	next_usable_cpu = cpumask_next(first_cpu - 1, &p->cpus_allowed);
@@ -7762,8 +7779,8 @@ static int select_energy_cpu_brute(struct task_struct *p, int prev_cpu, int sync
 	boosted = schedtune_task_boost(p) > 0;
 	prefer_idle = schedtune_prefer_idle(p) > 0;
 #elif  CONFIG_UCLAMP_TASK
-	boosted = uclamp_boosted(p);
-	prefer_idle = uclamp_latency_sensitive(p);
+	boosted = uclamp_boosted(p) > 0;
+	prefer_idle = uclamp_latency_sensitive(p) > 0;
 #else
 	boosted = get_sysctl_sched_cfs_boost() > 0;
 	prefer_idle = 0;
