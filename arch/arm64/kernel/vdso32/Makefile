@@ -92,11 +92,6 @@ VDSO_CFLAGS += -D__uint128_t='void*'
 VDSO_CFLAGS += $(call cc32-disable-warning,shift-count-overflow)
 VDSO_CFLAGS += -Wno-int-to-pointer-cast
 
-ifeq ($(cc-name),clang)
-# Snapdragon LLVM specific warning
-VDSO_CFLAGS += $(call cc32-disable-warning, vectorizer-no-neon)
-endif
-
 ifdef CONFIG_ARCH_MSM8937
 VDSO_CFLAGS += -mcpu=cortex-a53 -Wa,-mcpu=cortex-a53 -mtune=cortex-a53
 endif
