@@ -46,7 +46,6 @@
 #include <linux/profile.h>
 #include <linux/security.h>
 #include <linux/syscalls.h>
-#include <linux/binfmts.h>
 
 #include <asm/switch_to.h>
 #include <asm/tlb.h>
@@ -1199,9 +1198,6 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
 	bool update_root_tg = false;
 	int old_min, old_max, old_min_rt;
 	int result;
-
-	if (task_is_booster(current))
-		return 0;
 
 	mutex_lock(&uclamp_mutex);
 	old_min = sysctl_sched_uclamp_util_min;
