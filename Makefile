@@ -692,8 +692,6 @@ LDFLAGS		+= -plugin-opt=-data-sections
 # of objdump for processing symbol versions and exports
 LLVM_AR		:= llvm-ar
 LLVM_DIS	:= llvm-dis
-# Set O3 optimization level for LTO
-LDFLAGS		+= --plugin-opt=O3
 export LLVM_AR LLVM_DIS
 endif
 
@@ -901,7 +899,7 @@ KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
 endif
 
 ifeq ($(ld-name),lld)
-KBUILD_LDFLAGS += -O3
+KBUILD_LDFLAGS += -O2
 endif
 
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
