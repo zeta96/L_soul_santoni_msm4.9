@@ -477,7 +477,7 @@ static void voip_process_ul_pkt(uint8_t *voc_pkt,
 					      &prtd->out_queue);
 			} else {
 				/* Drop the second frame */
-				pr_err("%s: UL data dropped, read is slow\n",
+				pr_debug("%s: UL data dropped, read is slow\n",
 				       __func__);
 			}
 			break;
@@ -921,7 +921,7 @@ static int msm_pcm_capture_copy(struct snd_pcm_substream *substream,
 
 
 	} else if (ret == 0) {
-		pr_err_ratelimited("%s: No UL data available\n", __func__);
+		pr_debug("%s: No UL data available\n", __func__);
 		ret = -ETIMEDOUT;
 	} else {
 		pr_err("%s: Read was interrupted\n", __func__);
