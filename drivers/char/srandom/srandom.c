@@ -12,7 +12,6 @@
 #include <linux/mutex.h>
 #include <linux/delay.h>
 #include <linux/kthread.h>
-#include "srandom.h"
 
 #define DRIVER_AUTHOR "Jonathan Senkerik <josenk@jintegrate.co>"
 #define DRIVER_DESC   "Improved random number generator."
@@ -37,7 +36,7 @@
     #define COPY_FROM_USER copy_from_user
 #endif
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,8,0)
     #define KTIME_GET_NS ktime_get_real_ts64
     #define TIMESPEC timespec64
 #else
@@ -65,6 +64,8 @@
  */
 static int device_open(struct inode *, struct file *);
 static int device_release(struct inode *, struct file *);
+static ssize_t sdevice_read(struct file *, char *, size_t, loff_t *);
+static ssize_t sdevice_write(struct file *, const char *, size_t, loff_t *);
 static uint64_t xorshft64(void);
 static uint64_t xorshft128(void);
 static int nextbuffer(void);
@@ -80,7 +81,7 @@ static int work_thread(void *data);
 /*
  * Global variables are declared as static, so are global within the file.
  */
-const struct file_operations sfops = {
+static struct file_operations sfops = {
         .owner   = THIS_MODULE,
         .open    = device_open,
         .read    = sdevice_read,
@@ -130,7 +131,7 @@ uint64_t (*prngArrays)[numberOfRndArrays + 1];  /* Array of Array of SECURE RND 
 uint16_t ArraysBusyFlags = 0;             /* Binary Flags for Busy Arrays */
 int      arraysBufferPosition = 0;        /* Array reserved to determine which buffer to use */
 uint64_t tm_seed;
-struct   TIMESPEC tsp;
+struct   TIMESPEC ts;
 
 /*
  * Global counters
@@ -159,8 +160,8 @@ int mod_init(void)
         /*
          * Entropy Initialize #1
          */
-        KTIME_GET_NS(&tsp);
-        x    = (uint64_t)tsp.tv_nsec;
+        KTIME_GET_NS(&ts);
+        x    = (uint64_t)ts.tv_nsec;
         s[0] = xorshft64();
         s[1] = xorshft64();
 
@@ -199,10 +200,10 @@ int mod_init(void)
         }
 
 
-        prngArrays = kzalloc((numberOfRndArrays + 1) * rndArraySize * sizeof(uint64_t), GFP_KERNEL);
+        prngArrays = kmalloc((numberOfRndArrays + 1) * rndArraySize * sizeof(uint64_t), GFP_KERNEL);
         while (!prngArrays) {
-                printk(KERN_INFO "[srandom] mod_init kzalloc failed to allocate initial memory.  retrying...\n");
-                prngArrays = kzalloc((numberOfRndArrays + 1) * rndArraySize * sizeof(uint64_t), GFP_KERNEL);
+                printk(KERN_INFO "[srandom] mod_init kmalloc failed to allocate initial memory.  retrying...\n");
+                prngArrays = kmalloc((numberOfRndArrays + 1) * rndArraySize * sizeof(uint64_t), GFP_KERNEL);
         }
 
         /*
@@ -283,7 +284,7 @@ static int device_release(struct inode *inode, struct file *file)
 /*
  * Called when a process reads from the device.
  */
-ssize_t sdevice_read(struct file * file, char * buf, size_t requestedCount, loff_t *ppos)
+static ssize_t sdevice_read(struct file * file, char * buf, size_t requestedCount, loff_t *ppos)
 {
         int arraysPosition;
         int Block, ret;
@@ -296,7 +297,7 @@ ssize_t sdevice_read(struct file * file, char * buf, size_t requestedCount, loff
         #endif
 
 
-        new_buf = kzalloc((requestedCount + 512) * sizeof(uint8_t), GFP_KERNEL|__GFP_NOWARN);
+        new_buf = kmalloc((requestedCount + 512) * sizeof(uint8_t), GFP_KERNEL|__GFP_NOWARN);
         while (!new_buf) {
                 #ifdef DEBUG_READ
                 printk(KERN_INFO "[srandom] using vmalloc to allocate large blocksize.\n");
@@ -374,12 +375,11 @@ ssize_t sdevice_read(struct file * file, char * buf, size_t requestedCount, loff
         return requestedCount;
 }
 
-EXPORT_SYMBOL(sdevice_read);
 
 /*
  * Called when someone tries to write to /dev/srandom device
  */
-ssize_t sdevice_write(struct file *file, const char __user *buf, size_t receivedCount, loff_t *ppos)
+static ssize_t sdevice_write(struct file *file, const char __user *buf, size_t receivedCount, loff_t *ppos)
 {
 
         char *newdata;
@@ -392,9 +392,9 @@ ssize_t sdevice_write(struct file *file, const char __user *buf, size_t received
         /*
          * Allocate memory to read from device
          */
-        newdata = kzalloc(receivedCount, GFP_KERNEL);
+        newdata = kmalloc(receivedCount, GFP_KERNEL);
         while (!newdata) {
-                newdata = kzalloc(receivedCount, GFP_KERNEL);
+                newdata = kmalloc(receivedCount, GFP_KERNEL);
         }
 
         result = COPY_FROM_USER(newdata, buf, receivedCount);
@@ -411,7 +411,6 @@ ssize_t sdevice_write(struct file *file, const char __user *buf, size_t received
         return receivedCount;
 }
 
-EXPORT_SYMBOL(sdevice_write);
 
 
 /*
@@ -474,24 +473,24 @@ void update_sarray(int arraysPosition)
  */
  void seed_PRND_s0(void)
  {
-         KTIME_GET_NS(&tsp);
-         s[0] = (s[0] << 31) ^ (uint64_t)tsp.tv_nsec;
+         KTIME_GET_NS(&ts);
+         s[0] = (s[0] << 31) ^ (uint64_t)ts.tv_nsec;
          #ifdef DEBUG_PRNG_SEED
          printk(KERN_INFO "[srandom] seed_PRNG_s0 x:%llu, s[0]:%llu, s[1]:%llu\n", x, s[0], s[1]);
          #endif
  }
 void seed_PRND_s1(void)
 {
-        KTIME_GET_NS(&tsp);
-        s[1] = (s[1] << 24) ^ (uint64_t)tsp.tv_nsec;
+        KTIME_GET_NS(&ts);
+        s[1] = (s[1] << 24) ^ (uint64_t)ts.tv_nsec;
         #ifdef DEBUG_PRNG_SEED
         printk(KERN_INFO "[srandom] seed_PRNG_s1 x:%llu, s[0]:%llu, s[1]:%llu\n", x, s[0], s[1]);
         #endif
 }
 void seed_PRND_x(void)
 {
-        KTIME_GET_NS(&tsp);
-        x = (x << 32) ^ (uint64_t)tsp.tv_nsec;
+        KTIME_GET_NS(&ts);
+        x = (x << 32) ^ (uint64_t)ts.tv_nsec;
         #ifdef DEBUG_PRNG_SEED
         printk(KERN_INFO "[srandom] seed_PRNG_x x:%llu, s[0]:%llu, s[1]:%llu\n", x, s[0], s[1]);
         #endif
@@ -618,6 +617,23 @@ int proc_open(struct inode *inode, struct  file *file)
 
 module_init(mod_init);
 module_exit(mod_exit);
+
+
+/*
+    Stack Guard
+*/
+unsigned long __stack_chk_guard;
+void __stack_chk_guard_setup(void)
+{
+        KTIME_GET_NS(&ts);
+        __stack_chk_guard = (uint64_t)ts.tv_nsec;
+}
+
+void __stack_chk_fail(void)
+{
+        printk(KERN_INFO "[srandom] Stack Guard check Failed!\n");
+}
+
 
 /*
  *  Module license information
