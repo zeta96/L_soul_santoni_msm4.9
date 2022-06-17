@@ -242,7 +242,6 @@ static struct dentry *erofs_lookup(struct inode *dir,
 
 const struct inode_operations erofs_dir_iops = {
 	.lookup = erofs_lookup,
-	.getattr = erofs_getattr,
 	.listxattr = erofs_listxattr,
 	.get_acl = erofs_get_acl,
 };
