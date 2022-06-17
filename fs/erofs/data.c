@@ -205,7 +205,7 @@ submit_bio_retry:
 		bio = bio_alloc(GFP_NOIO, nblocks);
 
 		bio->bi_end_io = erofs_readendio;
-		bio->bi_dev=sb->s_bdev;
+		bio->bi_bdev=sb->s_bdev;
 		bio->bi_iter.bi_sector = (sector_t)blknr <<
 			LOG_SECTORS_PER_BLOCK;
 		bio->bi_opf = REQ_OP_READ | (ra ? REQ_RAHEAD : 0);
