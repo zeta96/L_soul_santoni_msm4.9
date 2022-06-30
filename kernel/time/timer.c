@@ -42,7 +42,6 @@
 #include <linux/sched/sysctl.h>
 #include <linux/slab.h>
 #include <linux/compat.h>
-#include <linux/random.h>
 
 #include <asm/uaccess.h>
 #include <asm/unistd.h>
