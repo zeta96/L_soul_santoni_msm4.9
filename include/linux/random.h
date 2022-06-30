@@ -8,7 +8,7 @@
 
 #include <linux/list.h>
 #include <linux/once.h>
-#include <asm/percpu.h>
+#include <linux/percpu.h>
 
 #include <uapi/linux/random.h>
 
