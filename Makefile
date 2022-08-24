@@ -977,6 +977,8 @@ KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
 KBUILD_CFLAGS += $(call cc-disable-warning, address)
 KBUILD_CFLAGS += $(call cc-disable-warning, array-compare)
 KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overread)
+KBUILD_CFLAGS += $(call cc-disable-warning, enum-int-mismatch)
+KBUILD_CFLAGS += $(call cc-disable-warning, enum-compare)
 
 # We'll want to enable this eventually, but it's not going away for 5.7 at least
 KBUILD_CFLAGS += $(call cc-disable-warning, zero-length-bounds)
