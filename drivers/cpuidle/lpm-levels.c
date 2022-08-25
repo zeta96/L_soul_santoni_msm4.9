@@ -292,10 +292,7 @@ static int cpu_power_select(struct cpuidle_device *dev,
 	uint32_t next_event_us = 0;
 	int i, idx_restrict;
 	uint32_t lvl_latency_us = 0;
-	uint64_t predicted = 0;
-	uint32_t htime = 0, idx_restrict_time = 0;
 	uint32_t next_wakeup_us = (uint32_t)sleep_us;
-	uint32_t *min_residency = get_per_cpu_min_residency(dev->cpu);
 	uint32_t *max_residency = get_per_cpu_max_residency(dev->cpu);
 
 	if ((sleep_disabled && !cpu_isolated(dev->cpu)) || sleep_us < 0)
@@ -1070,8 +1067,6 @@ static const struct platform_freeze_ops lpm_freeze_ops = {
 static int lpm_probe(struct platform_device *pdev)
 {
 	int ret;
-	unsigned int cpu;
-	struct hrtimer *cpu_histtimer;
 	struct kobject *module_kobj = NULL;
 
 	get_online_cpus();
