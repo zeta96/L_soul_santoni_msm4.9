@@ -72,10 +72,10 @@ static void autocut_charger_worker(struct work_struct *work)
 		POWER_SUPPLY_PROP_PRESENT, &present);
 
 	if (present.intval) {
-		if (charging_enabled.intval && bat_percent.intval >= 100) {
+		if (charging_enabled.intval && bat_percent.intval >= 99) {
 			if (!set_charging_control(batt_psy, false))
 				return;
-		} else if (!charging_enabled.intval && bat_percent.intval < 100) {
+		} else if (!charging_enabled.intval && bat_percent.intval < 99) {
 			if (!set_charging_control(batt_psy, true))
 				return;
 		}
