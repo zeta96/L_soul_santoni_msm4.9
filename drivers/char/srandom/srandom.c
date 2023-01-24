@@ -18,7 +18,7 @@
 #define DRIVER_DESC   "Improved random number generator."
 #define ULTRA_HIGH_SPEED_MODE 1     /* Set to 1 to enable Ultra High Speed Mode, which could be considered less random, but still passes dieharder */
 #define SDEVICE_NAME "srandom"      /* Dev name as it appears in /proc/devices */
-#define APP_VERSION "1.41.0"
+#define APP_VERSION "1.41.1"
 #define THREAD_SLEEP_VALUE 11       /* Amount of time in seconds, the background thread should sleep between each operation. Recommended prime */
 #define PAID 0
 
@@ -647,7 +647,6 @@ int work_thread(void *data)
                 ssleep(THREAD_SLEEP_VALUE);
         }
 
-        do_exit(0);
         return 0;
  }
 
