@@ -204,7 +204,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size)
 		dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
 		return -ENOMEM;
 	}
-	memcpy(mdata_buf, metadata, size);
+	memcpy_toio((void __iomem *)mdata_buf, metadata, size);
 
 	ret = qcom_scm_clk_enable();
 	if (ret)
