@@ -2753,7 +2753,7 @@ static void soc_work_fn(struct work_struct *work)
 		prev_soc = soc;
 	}
 
-	mod_delayed_work(system_freezable_power_efficient_wq,
+	schedule_delayed_work(
 		&chip->soc_work,
 		msecs_to_jiffies(SOC_WORK_MS));
 
@@ -8666,8 +8666,7 @@ static void delayed_init_work(struct work_struct *work)
 	if (chip->last_temp_update_time == 0)
 		update_temp_data(&chip->update_temp_work.work);
 
-	mod_delayed_work(system_freezable_power_efficient_wq,
-		&chip->soc_work,
+       schedule_delayed_work(&chip->soc_work,
                msecs_to_jiffies(SOC_WORK_MS));
 
 	if (!chip->use_otp_profile)
@@ -8771,7 +8770,7 @@ static int fg_probe(struct platform_device *pdev)
 	INIT_DEFERRABLE_WORK(&chip->update_sram_data, update_sram_data_work);
 	INIT_DEFERRABLE_WORK(&chip->update_temp_work, update_temp_data);
 	INIT_DEFERRABLE_WORK(&chip->check_empty_work, check_empty_work);
-	INIT_DEFERRABLE_WORK(&chip->soc_work, soc_work_fn);
+	INIT_DELAYED_WORK(&chip->soc_work, soc_work_fn);
 	INIT_DEFERRABLE_WORK(&chip->batt_profile_init, batt_profile_init);
 	INIT_DEFERRABLE_WORK(&chip->check_sanity_work, check_sanity_work);
 	INIT_WORK(&chip->ima_error_recovery_work, ima_error_recovery_work);
@@ -9018,7 +9017,7 @@ static void check_and_update_sram_data(struct fg_chip *chip)
 	mod_delayed_work(system_freezable_power_efficient_wq,
 		&chip->update_sram_data, msecs_to_jiffies(time_left * 1000));
 
-	mod_delayed_work(system_freezable_power_efficient_wq,
+	schedule_delayed_work(
 		&chip->soc_work, msecs_to_jiffies(SOC_WORK_MS));
 }
 
