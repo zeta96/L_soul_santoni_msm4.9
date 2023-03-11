@@ -13,6 +13,12 @@
 		};
 	};
 
+	qcom,pmi8950@2 {
+		pmi8950_vadc: vadc@3100 {
+			status = "disabled";
+		};
+	};
+		
 	qcom,pmi8950@3 {
 		labibb: qpnp-labibb-regulator {
 			ibb_regulator: qcom,ibb@dc00 {
@@ -58,8 +64,8 @@
        qcom,chg-inhibit-fg;
        qcom,thermal-mitigation = <1600 1500 1400 1200 1000 700 500 300 0>;
        status = "okay";
-       qcom,vchg_sns-vadc = <&pmi8950_vadc>;
-       qcom,vchg-adc-channel-id = <3>;
+       /*qcom,vchg_sns-vadc = <&pmi8950_vadc>;
+       qcom,vchg-adc-channel-id = <3>;*/
 };
 
 &qpnp_fg {
@@ -84,9 +90,9 @@
 	qcom,thermal-coefficients = [B7 85 B2 49 71 35];
 };
 
-&usb_otg {
+/*&usb_otg {
 	qcom,usbin-vadc = <&pmi8950_vadc>;
-};
+};*/
 
 &apc_vreg_corner {
 	/delete-property/ qcom,cpr-enable;
@@ -94,4 +100,10 @@
 
 &sdhc_1 {
   qcom,vdd-always-on;
+};
+
+&thermal_zones {
+	chg-temp-adc {
+		status = "disabled";
+	};
 };
