@@ -3649,7 +3649,7 @@ static ssize_t usb_data_enabled_show(struct device *dev,
 {
 	struct dwc3_msm *mdwc = dev_get_drvdata(dev);
 
-	return sysfs_emit(buf, "%s\n",
+	return sprintf(buf, "%s\n",
 			  mdwc->usb_data_enabled ? "enabled" : "disabled");
 }
 
