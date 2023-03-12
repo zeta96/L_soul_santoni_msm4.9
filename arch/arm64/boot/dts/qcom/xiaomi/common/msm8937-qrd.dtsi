@@ -180,8 +180,14 @@
 
 &pm8937_vadc {
 	/delete-node/ chan@11;
+	/delete-node/ chan@32;
+	/delete-node/ chan@3c;
+	/delete-node/ chan@13;
 };
 
 &thermal_zones {
 	/delete-node/ pa-therm1-adc;
+	/delete-node/ xo-therm-adc;
+	/delete-node/ xo-therm-buf-adc;
+	/delete-node/ case-therm-adc;
 };
