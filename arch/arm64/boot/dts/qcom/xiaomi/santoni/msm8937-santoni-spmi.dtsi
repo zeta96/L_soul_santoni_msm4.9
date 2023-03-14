@@ -12,12 +12,6 @@
 			qcom,mode = "pwm";
 		};
 	};
-
-	qcom,pmi8950@2 {
-		pmi8950_vadc: vadc@3100 {
-			status = "disabled";
-		};
-	};
 		
 	qcom,pmi8950@3 {
 		labibb: qpnp-labibb-regulator {
@@ -90,9 +84,9 @@
 	qcom,thermal-coefficients = [B7 85 B2 49 71 35];
 };
 
-/*&usb_otg {
+&usb_otg {
 	qcom,usbin-vadc = <&pmi8950_vadc>;
-};*/
+};
 
 &apc_vreg_corner {
 	/delete-property/ qcom,cpr-enable;
@@ -100,10 +94,4 @@
 
 &sdhc_1 {
   qcom,vdd-always-on;
-};
-
-&thermal_zones {
-	chg-temp-adc {
-		status = "disabled";
-	};
 };
