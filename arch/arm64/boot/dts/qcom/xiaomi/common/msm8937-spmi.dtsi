@@ -17,4 +17,8 @@
 			};
 		};
 	};
+
+	qcom,pmi8950@2 {
+		/delete-node/ pmi8950_vadc;			
+	};
 };
