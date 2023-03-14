@@ -20,6 +20,8 @@
 
 &usb_otg {
 	extcon = <&qpnp_smbcharger>;
+	/delete-property/ qcom,usbin-vadc;
+
 };
 
 &soc {
@@ -190,4 +192,5 @@
 	/delete-node/ xo-therm-adc;
 	/delete-node/ xo-therm-buf-adc;
 	/delete-node/ case-therm-adc;
+	/delete-node/ chg-temp-adc;
 };
