@@ -187,10 +187,6 @@
 	/delete-node/ chan@13;
 };
 
-qcom,pmi8950@2 {
-	/delete-node/ pmi8950_vadc;
-};
-
 &thermal_zones {
 	/delete-node/ pa-therm1-adc;
 	/delete-node/ xo-therm-adc;
