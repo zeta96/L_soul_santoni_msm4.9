@@ -3027,9 +3027,9 @@ static int qpnp_vadc_suspend_noirq(struct device *dev)
 		status &= QPNP_VADC_STATUS1_REQ_STS_EOC_MASK;
 		pr_debug("vadc conversion status=%d\n", status);
 		if (status != QPNP_VADC_STATUS1_EOC) {
-			pr_err(
+			pr_err_ratelimited(
 				"Aborting suspend, adc conversion requested while suspending\n");
-			return -EBUSY;
+			return 0;
 		}
 	}
 
