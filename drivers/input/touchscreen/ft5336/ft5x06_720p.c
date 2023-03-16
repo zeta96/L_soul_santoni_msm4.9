@@ -1108,6 +1108,7 @@ static int ft5x06_fw_upgrade_start(struct i2c_client *client,
 	return 0;
 }
 
+#if CTP_LOCKDOWN_INFO
 static void fts_ctpm_read_lockdown(struct i2c_client *client, struct ft5x06_ts_data *data)
 {
 	u8 buf[128];
@@ -1185,6 +1186,7 @@ static void fts_ctpm_read_lockdown(struct i2c_client *client, struct ft5x06_ts_d
 			lockdown_info[4], lockdown_info[5],
 			lockdown_info[6], lockdown_info[7]);
 }
+#endif
 
 #if TPD_AUTO_UPGRADE
 
@@ -1216,7 +1218,9 @@ static int fts_ctpm_fw_upgrade_with_i_file(struct ft5x06_ts_data *data)
 
 	if(vendor_id == 0xA8 || vendor_id == 0x00 || ic_type == 0xA3 || ic_type == 0x00) {
 		CTP_ERROR("vend_id read error,need project");
+#if CTP_LOCKDOWN_INFO
 		fts_ctpm_read_lockdown(client,data);
+#endif
 		flag_TPID = 1;
 		is_ic_update_crash = 1;
 	}
@@ -2470,7 +2474,9 @@ int get_boot_mode(struct i2c_client *client)
 		}
 	}
 
+#if CTP_LOCKDOWN_INFO
 	nomal_boot = 1;
+#endif
 	dev_err(&client->dev, "has no androidboot.mode \n");
 	return 0;
 }
