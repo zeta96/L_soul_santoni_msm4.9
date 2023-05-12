@@ -300,10 +300,6 @@
 #define ENTROPY_SHIFT 3
 #define ENTROPY_BITS(r) ((r)->entropy_count >> ENTROPY_SHIFT)
 
-#ifdef CONFIG_SRANDOM
-#include <../drivers/char/srandom/srandom.h>
-#endif
-
 /*
  * The minimum number of bits of entropy before we wake up a read on
  * /dev/random.  Should be enough to do a significant reseed.
@@ -1783,13 +1779,11 @@ _random_read(int nonblock, char __user *buf, size_t nbytes)
 	}
 }
 
-#ifndef CONFIG_SRANDOM
 static ssize_t
 random_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
 {
 	return _random_read(file->f_flags & O_NONBLOCK, buf, nbytes);
 }
-#endif
 
 static ssize_t
 urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
@@ -1859,7 +1853,6 @@ write_pool(struct entropy_store *r, const char __user *buffer, size_t count)
 	return 0;
 }
 
-#ifndef CONFIG_SRANDOM
 static ssize_t random_write(struct file *file, const char __user *buffer,
 			    size_t count, loff_t *ppos)
 {
@@ -1871,7 +1864,6 @@ static ssize_t random_write(struct file *file, const char __user *buffer,
 
 	return (ssize_t)count;
 }
-#endif
 
 static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
@@ -1936,13 +1928,8 @@ static int random_fasync(int fd, struct file *filp, int on)
 }
 
 const struct file_operations random_fops = {
-	#ifdef CONFIG_SRANDOM
-	.read  = sdevice_read,
-	.write = sdevice_write,
-	#else
 	.read  = random_read,
 	.write = random_write,
-	#endif
 	.poll  = random_poll,
 	.unlocked_ioctl = random_ioctl,
 	.fasync = random_fasync,
@@ -1950,13 +1937,8 @@ const struct file_operations random_fops = {
 };
 
 const struct file_operations urandom_fops = {
-	#ifdef CONFIG_SRANDOM
-	.read  = sdevice_read,
-	.write = sdevice_write,
-	#else
 	.read  = urandom_read,
 	.write = random_write,
-	#endif
 	.unlocked_ioctl = random_ioctl,
 	.fasync = random_fasync,
 	.llseek = noop_llseek,
