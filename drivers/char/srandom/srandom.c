@@ -473,12 +473,13 @@ void shuffle_sarray(int buffer_id)
         uint8_t mixer = (uint8_t)wyhash64_2();
         uint8_t istart = (mixer & 56) >> 4;
         uint8_t increment = (mixer & 3) + 1;
-
+        int i;
+    
         #ifdef DEBUG_SHUFFLE
         printk(KERN_INFO "[srandom] shuffle_sarray istart: %d, increment: %d, buffer_id:%d, first:%llu, last:%llu\n", istart, increment, buffer_id, prngArrays[buffer_id][0], prngArrays[buffer_id][rndArraySize-1]);
         #endif
 
-        for(int i = istart; i<rndArraySize/2; i = i + increment){
+        for(i = istart; i<rndArraySize/2; i = i + increment){
                 temp = prngArrays[buffer_id][i];
                 if ((mixer & 64) == 64) {
                         prngArrays[buffer_id][i] = swapInt64(prngArrays[buffer_id][rndArraySize-i-1]);
@@ -700,10 +701,11 @@ static void chacha_block_set_counter(struct chacha_context *ctx, uint64_t counte
 
 static void chacha_block_next(struct chacha_context *ctx) {
         uint32_t *counter = ctx->state + 12;
+        int i;
 
         // This is where the crazy voodoo magic happens.
         // Mix the bytes a lot and hope that nobody finds out how to undo it.
-        for (int i = 0; i < 16; i++) ctx->keystream32[i] = ctx->state[i];
+        for (i = 0; i < 16; i++) ctx->keystream32[i] = ctx->state[i];
 
 #define CHACHA_QUARTERROUND(x, a, b, c, d) \
     x[a] += x[b]; x[d] = rotl32(x[d] ^ x[a], 16); \
@@ -711,7 +713,7 @@ static void chacha_block_next(struct chacha_context *ctx) {
     x[a] += x[b]; x[d] = rotl32(x[d] ^ x[a], 8); \
     x[c] += x[d]; x[b] = rotl32(x[b] ^ x[c], 7);
 
-        for (int i = 0; i < 4; i++) 
+        for (i = 0; i < 4; i++) 
         {
                 CHACHA_QUARTERROUND(ctx->keystream32, 0, 4, 8, 12)
                 CHACHA_QUARTERROUND(ctx->keystream32, 1, 5, 9, 13)
@@ -723,7 +725,7 @@ static void chacha_block_next(struct chacha_context *ctx) {
                 CHACHA_QUARTERROUND(ctx->keystream32, 3, 4, 9, 14)
         }
 
-        for (int i = 0; i < 16; i++) ctx->keystream32[i] += ctx->state[i];
+        for (i = 0; i < 16; i++) ctx->keystream32[i] += ctx->state[i];
 
         
         // increment counter
@@ -755,7 +757,9 @@ void chacha_init_context(struct chacha_context *ctx, uint8_t key[], uint8_t nonc
 void chacha_xor(struct chacha_context *ctx, uint8_t *bytes, size_t n_bytes)
 {
         uint8_t *keystream8 = (uint8_t*)ctx->keystream32;
-        for (size_t i = 0; i < n_bytes; i++) 
+        size_t i;
+
+        for (i = 0; i < n_bytes; i++) 
         {
                 if (ctx->position >= 64) 
                 {
