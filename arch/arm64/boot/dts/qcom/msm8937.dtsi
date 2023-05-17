@@ -25,6 +25,7 @@
 
 	chosen {
 		bootargs = "kpti=0 noirqdebug norandmaps quiet nodebugmon rcu_nocbs=0-7 cgroup.memory=nokmem,nosocket nosoftlockup mce=ignore_ce";
+		rng-seed = <0x12345678>;
 	};
 
 	firmware: firmware {
