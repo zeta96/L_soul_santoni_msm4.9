@@ -475,7 +475,7 @@ static bool should_umount(struct path *path)
 	}
 
 	if (current->nsproxy->mnt_ns == init_nsproxy.mnt_ns) {
-		pr_info("ignore global mnt namespace process: %d\n",
+		pr_debug("ignore global mnt namespace process: %d\n",
 			current_uid().val);
 		return false;
 	}
