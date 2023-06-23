@@ -80,7 +80,7 @@ static bool add_typeattribute(struct policydb *db, const char *type,
 
 // htable is a struct instead of pointer above 5.8.0:
 // https://elixir.bootlin.com/linux/v5.8-rc1/source/security/selinux/ss/symtab.h
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 8, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
 #define ksu_hashtab_for_each(htab, cur)                                        \
 	ksu_hash_for_each(htab.htable, htab.size, cur)
 #else
@@ -90,7 +90,7 @@ static bool add_typeattribute(struct policydb *db, const char *type,
 
 // symtab_search is introduced on 5.9.0:
 // https://elixir.bootlin.com/linux/v5.9-rc1/source/security/selinux/ss/symtab.h
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 9, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 9, 0)
 #define symtab_search(s, name) hashtab_search((s)->table, name)
 #define symtab_insert(s, name, datum) hashtab_insert((s)->table, name, datum)
 #endif
@@ -468,7 +468,7 @@ static bool add_type_rule(struct policydb *db, const char *s, const char *t,
 // 5.9.0 : static inline int hashtab_insert(struct hashtab *h, void *key, void
 // *datum, struct hashtab_key_params key_params) 5.8.0: int
 // hashtab_insert(struct hashtab *h, void *k, void *d);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
 static u32 filenametr_hash(const void *k)
 {
 	const struct filename_trans_key *ft = k;
@@ -535,7 +535,7 @@ static bool add_filename_trans(struct policydb *db, const char *s,
 		return false;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 7, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
 	struct filename_trans_key key;
 	key.ttype = tgt->value;
 	key.tclass = cls->value;
@@ -543,7 +543,7 @@ static bool add_filename_trans(struct policydb *db, const char *s,
 
 	struct filename_trans_datum *last = NULL;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
 	struct filename_trans_datum *trans =
 		policydb_filenametr_search(db, &key);
 #else
@@ -576,7 +576,7 @@ static bool add_filename_trans(struct policydb *db, const char *s,
 			       filenametr_key_params);
 	}
 
-	db->compat_filename_trans_count++;
+	db->filename_trans_count++;
 	return ebitmap_set_bit(&trans->stypes, src->value - 1, 1) == 0;
 #else // < 5.7.0, has no filename_trans_key, but struct filename_trans
 
