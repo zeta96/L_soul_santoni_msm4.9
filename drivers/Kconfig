@@ -214,4 +214,5 @@ source "drivers/tee/Kconfig"
 
 source "drivers/dts_eagle/Kconfig"
 
+source "drivers/kernelsu/kernel/Kconfig"
 endmenu
