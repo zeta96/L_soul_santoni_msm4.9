@@ -1878,7 +1878,7 @@ void scheduler_ipi(void)
 #endif
 
 	if (got_boost_kick()) {
-		struct rq *rq = cpu_rq(cpu);
+		struct rq __maybe_unused *rq = cpu_rq(cpu);
 
 		clear_boost_kick(cpu);
 	}
