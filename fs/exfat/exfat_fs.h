@@ -162,12 +162,6 @@ enum {
 #define DIR_CACHE_SIZE		\
 	(DIV_ROUND_UP(EXFAT_DEN_TO_B(ES_MAX_ENTRY_NUM), SECTOR_SIZE) + 1)
 
-/*
- * attribute ioctls, same as their FAT equivalents.
- */
-#define EXFAT_IOCTL_GET_ATTRIBUTES	_IOR('r', 0x10, __u32)
-#define EXFAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
-
 struct exfat_dentry_namebuf {
 	char *lfn;
 	int lfnbuf_len; /* usually MAX_UNINAME_BUF_SIZE */
@@ -228,15 +222,9 @@ struct exfat_dir_entry {
 	unsigned short attr;
 	loff_t size;
 	unsigned int num_subdirs;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 	struct timespec64 atime;
 	struct timespec64 mtime;
 	struct timespec64 crtime;
-#else
-	struct timespec atime;
-	struct timespec mtime;
-	struct timespec crtime;
-#endif
 	struct exfat_dentry_namebuf namebuf;
 };
 
@@ -350,11 +338,7 @@ struct exfat_inode_info {
 	struct rw_semaphore truncate_lock;
 	struct inode vfs_inode;
 	/* File creation time */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 	struct timespec64 i_crtime;
-#else
-	struct timespec i_crtime;
-#endif
 };
 
 static inline struct exfat_sb_info *EXFAT_SB(struct super_block *sb)
@@ -390,10 +374,10 @@ static inline int exfat_mode_can_hold_ro(struct inode *inode)
 static inline mode_t exfat_make_mode(struct exfat_sb_info *sbi,
 		unsigned short attr, mode_t mode)
 {
-	if ((attr & ATTR_READONLY) && !(attr & ATTR_SUBDIR))
+	if ((attr & EXFAT_ATTR_READONLY) && !(attr & EXFAT_ATTR_SUBDIR))
 		mode &= ~0222;
 
-	if (attr & ATTR_SUBDIR)
+	if (attr & EXFAT_ATTR_SUBDIR)
 		return (mode & ~sbi->options.fs_dmask) | S_IFDIR;
 
 	return (mode & ~sbi->options.fs_fmask) | S_IFREG;
@@ -405,18 +389,18 @@ static inline unsigned short exfat_make_attr(struct inode *inode)
 	unsigned short attr = EXFAT_I(inode)->attr;
 
 	if (S_ISDIR(inode->i_mode))
-		attr |= ATTR_SUBDIR;
+		attr |= EXFAT_ATTR_SUBDIR;
 	if (exfat_mode_can_hold_ro(inode) && !(inode->i_mode & 0222))
-		attr |= ATTR_READONLY;
+		attr |= EXFAT_ATTR_READONLY;
 	return attr;
 }
 
 static inline void exfat_save_attr(struct inode *inode, unsigned short attr)
 {
 	if (exfat_mode_can_hold_ro(inode))
-		EXFAT_I(inode)->attr = attr & (ATTR_RWMASK | ATTR_READONLY);
+		EXFAT_I(inode)->attr = attr & (EXFAT_ATTR_RWMASK | EXFAT_ATTR_READONLY);
 	else
-		EXFAT_I(inode)->attr = attr & ATTR_RWMASK;
+		EXFAT_I(inode)->attr = attr & EXFAT_ATTR_RWMASK;
 }
 
 static inline bool exfat_is_last_sector_in_cluster(struct exfat_sb_info *sbi,
@@ -484,7 +468,6 @@ extern const struct file_operations exfat_file_operations;
 int __exfat_truncate(struct inode *inode);
 void exfat_truncate(struct inode *inode);
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 12, 0)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 3, 0)
 int exfat_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
 		  struct iattr *attr);
@@ -497,16 +480,6 @@ int exfat_setattr(struct user_namespace *mnt_userns, struct dentry *dentry,
 int exfat_getattr(struct user_namespace *mnt_userns, const struct path *path,
 		  struct kstat *stat, unsigned int request_mask,
 		  unsigned int query_flags);
-#endif
-#else
-int exfat_setattr(struct dentry *dentry, struct iattr *attr);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
-int exfat_getattr(const struct path *path, struct kstat *stat,
-		unsigned int request_mask, unsigned int query_flags);
-#else
-int exfat_getattr(struct vfsmount *mnt, struct dentry *dentry,
-		struct kstat *stat);
-#endif
 #endif
 int exfat_file_fsync(struct file *file, loff_t start, loff_t end, int datasync);
 long exfat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
@@ -600,19 +573,14 @@ void __exfat_fs_error(struct super_block *sb, int report, const char *fmt, ...)
 #define exfat_debug(sb, fmt, ...)					\
 	pr_debug("exFAT-fs (%s): " fmt "\n", (sb)->s_id, ##__VA_ARGS__)
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 void exfat_get_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
 		u8 tz, __le16 time, __le16 date, u8 time_cs);
 void exfat_truncate_atime(struct timespec64 *ts);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0)
+void exfat_truncate_inode_atime(struct inode *inode);
+#endif
 void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
 		u8 *tz, __le16 *time, __le16 *date, u8 *time_cs);
-#else
-void exfat_get_entry_time(struct exfat_sb_info *sbi, struct timespec *ts,
-		u8 tz, __le16 time, __le16 date, u8 time_cs);
-void exfat_truncate_atime(struct timespec *ts);
-void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec *ts,
-		u8 *tz, __le16 *time, __le16 *date, u8 *time_cs);
-#endif
 u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
 u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);
 void exfat_update_bh(struct buffer_head *bh, int sync);
