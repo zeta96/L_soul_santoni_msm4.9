@@ -3,12 +3,21 @@
 
 # KernelSU
 
+<img src="https://kernelsu.org/logo.png" style="width: 96px;" alt="logo">
+
 A Kernel-based root solution for Android devices.
+
+[![latest release badge](https://img.shields.io/github/v/release/tiann/KernelSU?label=Release&logo=github)](https://github.com/tiann/KernelSU/releases/latest)
+[![weblate](https://img.shields.io/badge/Localization-Weblate-teal?logo=weblate)](https://hosted.weblate.org/engage/kernelsu)
+[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/KernelSU)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-orange.svg?logo=gnu)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![GitHub License](https://img.shields.io/github/license/tiann/KernelSU?logo=gnu)](/LICENSE)
+
 
 ## Features
 
 1. Kernel-based `su` and root access management.
-2. Module system based on overlayfs.
+2. Module system based on [OverlayFS](https://en.wikipedia.org/wiki/OverlayFS).
 3. [App Profile](https://kernelsu.org/guide/app-profile.html): Lock up the root power in a cage.
 
 ## Compatibility State
@@ -35,8 +44,8 @@ To help translate KernelSU or improve existing translations, please use [Weblate
 
 ## License
 
-- Files under the `kernel` directory are [GPL-2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-- All other parts except the `kernel` directory are [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html)
+- Files under the `kernel` directory are [GPL-2.0-only](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+- All other parts except the `kernel` directory are [GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Credits
 
