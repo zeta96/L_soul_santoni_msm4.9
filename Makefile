@@ -887,9 +887,7 @@ KBUILD_CFLAGS += $(call cc-option, -mllvm -polly) \
 		 $(call cc-option, -mllvm -polly-run-dce) \
 		 $(call cc-option, -mllvm -polly-ast-use-context) \
 		 $(call cc-option, -mllvm -polly-invariant-load-hoisting) \
-		 $(call cc-option, -mllvm -polly-reschedule=1) \
-		 $(call cc-option, -mllvm -polly-loopfusion-greedy=1) \
-		 $(call cc-option, -mllvm -polly-postopts=1) \
+		 $(call cc-option, -mllvm -polly-opt-fusion=max) \
 		 $(call cc-option, -mllvm -polly-run-inliner) \
 		 $(call cc-option, -mllvm -polly-vectorizer=stripmine)
 endif
