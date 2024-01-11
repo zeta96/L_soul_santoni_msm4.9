@@ -79,6 +79,8 @@ static inline bool ksu_path_mounted(const struct path *path)
 	//not tested
 #endif
 
+static bool ksu_module_mounted = false;
+
 extern int handle_sepolicy(unsigned long arg3, void __user *arg4);
 int vmin_ksu = KERNEL_SU_VERSION;
 int __read_mostly ksu_version = 0;
@@ -385,6 +387,11 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
 			}
 			break;
 		}
+		case EVENT_MODULE_MOUNTED: {
+			ksu_module_mounted = true;
+			pr_info("module mounted!\n");
+			break;
+		}
 		default:
 			break;
 		}
@@ -581,6 +588,11 @@ static void try_umount(const char *mnt, bool check_mnt, int flags)
 
 int ksu_handle_setuid(struct cred *new, const struct cred *old)
 {
+	// this hook is used for umounting overlayfs for some uid, if there isn't any module mounted, just ignore it!
+	if (!ksu_module_mounted) {
+		return 0;
+	}
+
 	if (!new || !old) {
 		return 0;
 	}
@@ -628,7 +640,10 @@ int ksu_handle_setuid(struct cred *new, const struct cred *old)
 	try_umount("/vendor", true, 0);
 	try_umount("/product", true, 0);
 	try_umount("/data/adb/modules", false, MNT_DETACH);
+
+	// try umount ksu temp path
 	try_umount("/debug_ramdisk", false, MNT_DETACH);
+	try_umount("/sbin", false, MNT_DETACH);
 
 	return 0;
 }
