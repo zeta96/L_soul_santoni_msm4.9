@@ -6,3 +6,4 @@
 #include "msm8937-spmi.dtsi"
 #include "msm8937-cpu.dtsi"
 #include "msm8937-energy-model.dtsi"
+#include "msm8937-retrofit-partition.dtsi"

@@ -41,12 +41,3 @@
 	};
 };
 
-&firmware {
-	android {
-		fstab {
-			vendor {
-                		status = "ok";
-			};
-		};
-	};
-};
