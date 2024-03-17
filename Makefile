@@ -918,7 +918,10 @@ endif
 # Future support for zero initialization is still being debated, see
 # https://bugs.llvm.org/show_bug.cgi?id=45497. These flags are subject to being
 # renamed or dropped.
-KBUILD_CFLAGS   += -ftrivial-auto-var-init=zero -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+KBUILD_CFLAGS   += -ftrivial-auto-var-init=zero 
+ifneq ($(call clang-ifversion, -ge, 1700, y), y)
+KBUILD_CFLAGS   += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+endif
 endif
 
 # These warnings generated too much noise in a regular build.
