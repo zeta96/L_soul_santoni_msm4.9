@@ -924,6 +924,10 @@ KBUILD_CFLAGS   += -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed
 endif
 endif
 
+ifeq ($(call gcc-ifversion, -ge, 1200, y), y)
+KBUILD_CFLAGS   += -ftrivial-auto-var-init=zero
+endif
+
 # These warnings generated too much noise in a regular build.
 # Use make W=1 to enable them (see scripts/Makefile.extrawarn)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
