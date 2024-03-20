@@ -31,6 +31,9 @@
 #include <linux/ima.h>
 #include <linux/dnotify.h>
 #include <linux/compat.h>
+#ifdef CONFIG_SUS_FS
+#include <linux/suspicious.h>
+#endif
 
 #ifdef CONFIG_KSU
 #include <linux/ksu.h>
@@ -144,6 +147,18 @@ static long do_sys_truncate(const char __user *pathname, loff_t length)
 	unsigned int lookup_flags = LOOKUP_FOLLOW;
 	struct path path;
 	int error;
+#ifdef CONFIG_SUS_FS
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(pathname);
+	status = suspicious_path(fname);
+	putname_safe(fname);
+
+	if (status) {
+		return -ENOENT;
+	}
+#endif
 
 	if (length < 0)	/* sorry, but loff_t says... */
 		return -EINVAL;
@@ -378,6 +393,18 @@ SYSCALL_DEFINE3(faccessat, int, dfd, const char __user *, filename, int, mode)
 	struct vfsmount *mnt;
 	int res;
 	unsigned int lookup_flags = LOOKUP_FOLLOW;
+#ifdef CONFIG_SUS_FS
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(filename);
+	status = suspicious_path(fname);
+	putname_safe(fname);
+
+	if (status) {
+		return -ENOENT;
+	}
+#endif	
 
 #ifdef CONFIG_KSU
 	if (get_ksu_state() > 0)
@@ -481,6 +508,19 @@ SYSCALL_DEFINE1(chdir, const char __user *, filename)
 	struct path path;
 	int error;
 	unsigned int lookup_flags = LOOKUP_FOLLOW | LOOKUP_DIRECTORY;
+#ifdef CONFIG_SUS_FS
+	struct filename* fname;
+	int status;
+
+	fname = getname_safe(filename);
+	status = suspicious_path(fname);
+	putname_safe(fname);
+
+	if (status) {
+		return -ENOENT;
+	}
+#endif
+
 retry:
 	error = user_path_at(AT_FDCWD, filename, lookup_flags, &path);
 	if (error)
