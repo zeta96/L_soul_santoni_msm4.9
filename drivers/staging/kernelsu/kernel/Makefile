@@ -18,7 +18,7 @@ ccflags-y += -I$(objtree)/security/selinux -include $(srctree)/include/uapi/asm-
 obj-$(CONFIG_KSU) += kernelsu.o
 
 # KSU Version
-$(eval KSU_VERSION=11549)
+$(eval KSU_VERSION=11782)
 $(info -- KernelSU version: $(KSU_VERSION))
 ccflags-y += -DKSU_VERSION=$(KSU_VERSION)
 
