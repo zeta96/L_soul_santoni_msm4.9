@@ -4,7 +4,7 @@ Embora existam muitas semelhanças entre os módulos KernelSU e os módulos Magi
 
 ## Semelhanças
 
-- Formato de arquivo do módulo: ambos usam o formato zip para organizar os módulos, e o formato dos módulos é quase o mesmo.
+- Formato de arquivo do módulo: ambos usam o formato ZIP para organizar os módulos, e o formato dos módulos é quase o mesmo.
 - Diretório de instalação do módulo: ambos localizados em `/data/adb/modules`.
 - Sem sistema: ambos suportam a modificação de `/system` de maneira sem sistema por meio de módulos.
 - post-fs-data.sh: o tempo de execução e a semântica são exatamente os mesmos.
@@ -25,4 +25,4 @@ Aqui estão algumas diferenças:
 - Os diretórios do BusyBox são diferentes. O BusyBox integrado no KernelSU está localizado em `/data/adb/ksu/bin/busybox`, enquanto no Magisk está em `/data/adb/magisk/busybox`. **Observe que este é um comportamento interno do KernelSU e pode mudar no futuro!**
 - O KernelSU não suporta arquivos `.replace`, entretanto, o KernelSU suporta as variáveis ​​`REMOVE` e `REPLACE` para remover ou substituir arquivos e pastas.
 - O KernelSU adiciona o estágio `boot-completed` para executar alguns scripts na inicialização concluída.
-- O KernelSU adiciona o estágio `post-mount` para executar alguns scripts após montar overlayfs.
+- O KernelSU adiciona o estágio `post-mount` para executar alguns scripts após montar OverlayFS.
