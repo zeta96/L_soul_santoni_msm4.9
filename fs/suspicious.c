@@ -34,8 +34,7 @@ static const char* const suspicious_mount_paths[] = {
 	"/apex/com.android.art/bin/dex2oat",
 	"/system/apex/com.android.art/bin/dex2oat",
 	"/system/etc/preloaded-classes",
-	"/dev/zygisk",
-	"/system/etc/hosts"
+	"/dev/zygisk"
 };
 
 static const char* const suspicious_mount_devices[] = {
@@ -52,54 +51,6 @@ static uid_t getuid(void) {
 	
 	return credentials->uid.val;
 	
-}
-
-static void do_spoof_kstat_hosts(struct kstat* const stat) {
-// Change the HOSTS_TIME for atime,mtime,ctime accordingly
-#define HOSTS_TIME 1230768000 //since Epoch: 1230768000 -> 2009-01-01 08:00:00.000000000
-// Change the HOSTS_SIZE for file size accordingly */
-#define HOSTS_SIZE 56
-	if (stat != NULL) {
-		// assign your own value below accordingly
-		stat->atime.tv_sec = HOSTS_TIME;
-		stat->atime.tv_nsec = 0;
-		stat->mtime.tv_sec = HOSTS_TIME;
-		stat->mtime.tv_nsec = 0;
-		stat->ctime.tv_sec = HOSTS_TIME;
-		stat->ctime.tv_nsec = 0;
-		//uncomment 'stat->size' below if you need to spoof the file size as well
-		// stat->size = HOSTS_SIZE;
-	}
-}
-
-static const char* const spoof_kstat_paths[] = {
-	"/system/etc/hosts"
-};
-// Be careful to not mess up the order with 'spoof_kstat_paths[]'
-static void (*fn_ptr_spoof_kstat[])(struct kstat* const) = {
-    do_spoof_kstat_hosts
-};
-
-void check_if_spoof_kstat(struct path* const path, struct kstat* const stat) {
-	char pathname[128]; // change to a larger buffer size if there are longer absolute path names you want to spoof
-	char *p_pathname;
-	int index;
-	
-	if (!uid_matches()) {
-		return;
-	}
-	
-	for (index = 0; index < ARRAY_SIZE(spoof_kstat_paths); index++) {
-		p_pathname = d_path(path, pathname, sizeof(pathname));
-		if (!IS_ERR(p_pathname)) {
-			const char* const name = spoof_kstat_paths[index];
-			if (memcmp(name, p_pathname, strlen(name)) == 0) {
-				printk(KERN_INFO "suspicious-fs: spoofing kstat for path '%s' to process with UID %i\n", name, getuid());
-				fn_ptr_spoof_kstat[index](stat);
-				return;
-			}
-		}
-	}
 }
 
 int is_suspicious_path(const struct path* const file)

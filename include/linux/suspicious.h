@@ -7,7 +7,6 @@
 #define getname_safe(name) (name == NULL ? ERR_PTR(-EINVAL) : getname(name))
 #define putname_safe(name) (IS_ERR(name) ? NULL : putname(name))
 
-void check_if_spoof_kstat(struct path* const path, struct kstat* const stat);
 int is_suspicious_path(const struct path* const file);
 int is_suspicious_mount(struct vfsmount* const mnt, const struct path* const root);
 int suspicious_path(const struct filename* const name);

@@ -130,12 +130,6 @@ retry:
 		goto out;
 
 	error = vfs_getattr(&path, stat);
-
-#ifdef CONFIG_SUS_FS	
-	if (!error)
-		check_if_spoof_kstat(&path, stat);
-#endif
-
 	path_put(&path);
 	if (retry_estale(error, lookup_flags)) {
 		lookup_flags |= LOOKUP_REVAL;
