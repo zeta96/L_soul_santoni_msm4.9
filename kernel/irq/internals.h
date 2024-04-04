@@ -210,6 +210,9 @@ static inline bool irqd_has_set(struct irq_data *d, unsigned int mask)
 
 static inline void __kstat_incr_irqs_this_cpu(struct irq_desc *desc)
 {
+#ifdef CONFIG_IRQ_SBALANCE
+	WRITE_ONCE(desc->last_cpu, raw_smp_processor_id());
+#endif
 	__this_cpu_inc(*desc->kstat_irqs);
 	__this_cpu_inc(kstat.irqs_sum);
 }
