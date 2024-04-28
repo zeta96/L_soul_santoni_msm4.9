@@ -311,13 +311,6 @@ endif # NETWORK_FILESYSTEMS
 source "fs/nls/Kconfig"
 source "fs/dlm/Kconfig"
 
-config SUS_FS
-	bool "suspicious-fs"
-	help
-	  This prevents the kernel from revealing KernelSU/Zygisk mount points in /proc 
-	  for non-system apps and also prevents scanning the filesystem for suspicious 
-	  files and directories.
-	  
 endmenu
 
 config BLOCK_UNWANTED_FILES
