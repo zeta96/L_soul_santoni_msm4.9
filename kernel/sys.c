@@ -1164,8 +1164,8 @@ SYSCALL_DEFINE1(newuname, struct new_utsname __user *, name)
 
 	if (is_gms)
 		snprintf(tmp.release, sizeof(tmp.release), "%u.%u.%u",
-			 LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL,
-			 LINUX_VERSION_SUBLEVEL);
+			 ((LINUX_VERSION_CODE >> 16) & 0x0ff), ((LINUX_VERSION_CODE >> 8) & 0xff),
+			 (LINUX_VERSION_CODE & 0xffff));
 
 	if (copy_to_user(name, &tmp, sizeof(tmp)))
 		return -EFAULT;
